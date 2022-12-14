@@ -1,0 +1,23 @@
+
+  html {
+    background-color: #ffffff;
+  }
+  
+.App {
+    text-align: center;
+  }
+  .center {
+    text-align: center;
+   margin: auto;
+    width: 50%;
+    padding: 30px;
+  }
+  .wrapper {
+    height: 600px !important;
+    }
+  .Nav{
+    width: 30px !important;
+    margin-left: 10px;
+  }
+    
+  
