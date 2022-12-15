@@ -20,8 +20,11 @@
     "react-bootstrap": "^2.6.0",
     "react-chartjs-2": "^5.0.1",
     "react-dom": "^18.2.0",
+    "react-icons": "^4.7.1",
+    "react-pro-sidebar": "^1.0.0-alpha.9",
     "react-router-dom": "^6.4.5",
     "react-scripts": "5.0.1",
+    "styled-components": "^5.3.6",
     "sweetalert2": "^11.6.15",
     "web-vitals": "^2.1.4",
     "xhr": "^2.6.0"

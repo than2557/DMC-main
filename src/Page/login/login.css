@@ -1,15 +1,14 @@
+html {
+  z-index: -1;
+  background-color: #99bda2;
+}
+
 
 text{font-size: small;}
 .Login {
   text-align: center;
   
 }
-html {
-  z-index: -1;
-  background-color: #b0c5b0;
-}
-
-
 .App-logo {
   height: 40vmin;
   pointer-events: none;

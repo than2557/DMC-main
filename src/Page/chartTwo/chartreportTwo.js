@@ -1,20 +1,19 @@
 
-import { Link,HistoryRouterProps,redirect} from "react-router-dom";
-import { Route,Routes,BrowserRouter,useNavigate } from 'react-router-dom';
+import ReactDOM from'react-dom';
 import './chart.css';
 import React,{useState,SyntheticEvent,useEffect} from'react';
 import {Button,Card,Row,Col,Container,Navbar,Nav,Jumbotron,InputGroup,Form,NavDropdown} from 'react-bootstrap';
 
 import LineChart from '../../component/LineChart';
 import logo from '../../img/icon.png';
-import swal from 'sweetalert2';
+
+
 
 
 import 'chart.js/auto'; 
 
-function ReportChart() {
-  const navigate = useNavigate();
-
+function ReportChartTwo() {
+  
 //   let data_mock = {"type":1,"state":1,"year":"2022"}
   const options = {
     responsive: true,
@@ -43,9 +42,6 @@ let LineData = {labels,datasets:[]};
   const [state, setState] = useState();
   const [year, setYear] = useState();
   const [ChartData,setChartData] = useState(LineData);
-  const [reportState1, setReportState] = useState();
-
-
 
 const SerachData =  async() => {
   // console.log({type,state,year})
@@ -90,16 +86,13 @@ const SerachData =  async() => {
 }
 const Logout = ()=>{
   localStorage.removeItem("accessToken");
-  window.location.href = "/login";
+  window.location.href = "/Login";
 }
-const GetReportwo = ()=>{
-  document.getElementById('report2').style.display ='block';
-  document.getElementById('report1').style.display = 'none';
+const home =() =>{
+  window.location.href = "/chartReport";
 }
-const GetReporone = ()=>{
-  document.getElementById('report2').style.display ='none';
-  document.getElementById('report1').style.display = 'block';
-}
+
+
   return (
     
 
@@ -108,7 +101,7 @@ const GetReporone = ()=>{
 
         <Navbar bg="light" expand="lg">
       <Container fluid>
-        <Navbar.Brand><img  class="Nav" src={logo} alt="Logo" /></Navbar.Brand>
+        <Navbar.Brand ><img  className="Nav" src={logo} alt="Logo" /></Navbar.Brand>
         <Navbar.Toggle aria-controls="navbarScroll" />
 
         <Navbar.Collapse id="navbarScroll">
@@ -117,23 +110,16 @@ const GetReporone = ()=>{
             style={{ maxHeight: '100px' }}
             navbarScroll
           >
-      
-   
-          </Nav>
-             
+          </Nav>   
           <NavDropdown   title="รายงาน" id="basic-nav-dropdown" style={{'margin-right':80}}>
               <NavDropdown.Item>
-              <a onClick={GetReportwo}>บัญชีผู้ใช้งานระบบบูรณาการ</a>
+              บัญชีผู้ใช้งานระบบบูรณาการ
               </NavDropdown.Item>
-              <NavDropdown.Item>
-                <a onClick={GetReporone} >หนังสือรับรองการแจ้ง/ใบอนุญาต</a>
-              </NavDropdown.Item>
-              {/* <NavDropdown.Divider /> */}
+              
               <NavDropdown.Item href="#action/3.4">
                 บัญชีผู้ใช้งานระบบสนับสนุน
               </NavDropdown.Item>
             </NavDropdown>
-            
             <Button variant="outline-danger" onClick={Logout}>ออกจากระบบ</Button>
        
         </Navbar.Collapse>
@@ -142,8 +128,7 @@ const GetReporone = ()=>{
     
     <br/>
     <br/>
-    <div className="card col-md-8 center" id="report2" style={{"display":"none"}}>
-      <input id="inputreport2" value="report2"  hidden/>
+  <div className="card col-md-8 center" id="report2" style={{"display":"block"}}>
   <div className="container">
       รายงานบัญชีผู้ใช้งานระบบบูรณาการข้อมูลประชาขนและการบริการภาครัฐ
   <div className="row">
@@ -189,61 +174,6 @@ const GetReporone = ()=>{
   </div>
 </div>
   </div>
-{/* <div>end form report 2</div> */}
-
-  <div className="card col-md-8 center" id="report1" style={{"display":"block"}}>
-  <input id="inputreport1" value="report1"  hidden/>
-  <div className="container">
-  รายงานผลการดำเนินการเกี่ยวกับหนังสือรับรองการแจ้ง/ใบอนุญาต
-  <div className="row">
-    <div className="col">
- <br/>
-      <InputGroup className="mb-2">
-        <InputGroup.Text id="basic-addon1">ประเภท</InputGroup.Text>
-        <Form.Select aria-label="Default select example" id="type" name="type" onChange={e=>setType(parseInt(e.target.value))}>
-        <option value="0" selected="">เลือกประเภท</option>
-      <option value="1">ใบอนุญาต</option>
-      <option value="2">หนังสือรับรอง</option>
-    </Form.Select>
-      </InputGroup>
-    </div>
-    <div className="col">
-    <br/>
-      <InputGroup className="mb-4">
-      <InputGroup.Text id="basic-addon1">สถานะ</InputGroup.Text>
-      <Form.Select aria-label="Default select example" id="state" name="state" onChange={e=>setState(parseInt(e.target.value))}>
-      <option value="0" selected="">รอยืนเอกสาร</option>
-      <option value="1">ยื่นคำขอ</option>
-      <option value="2">หลักฐานในการยื่นไม่ครบถ้วน</option>
-      <option value="3">แบบตรวจสถานที่ไม่ครบถ้วน</option>
-      <option value="4">รอพิจารณาเอกสารลักษณะของสถานที่ ครั้งที่ 1</option>
-      <option value="5">รอผลออกตรวจสอบสถานที่</option>
-      <option value="6">รอพิจารณาอนุมัติ</option>
-      <option value="7">รอผู้ประกอบการชำระค่าธรรมเนียม</option>
-      <option value="8">อนุมัติคำขอเรียบร้อย</option>
-      </Form.Select>
-      </InputGroup>
-    </div>
-    <div className="col">
-    <br/>
-      <InputGroup className="mb-2">
-      <InputGroup.Text id="basic-addon1">ปี</InputGroup.Text>
-      <Form.Select aria-label="Default select example" id="year" name="year" onChange={e=>setYear(e.target.value)}>
-      <option value="0" selected="">ปี</option>
-      <option value="2022">2022</option>
-      <option value="2021">2021</option>
-      <option value="2020">2020</option>
-   
-      </Form.Select>
-      </InputGroup>
-    </div>
-    <div className="col">
-    <br/>
-      <Button onClick={SerachData}>ค้นหาข้อมูล</Button>
-    </div>
-  </div>
-</div>
-  </div>
 
 
   <div className="container">
@@ -261,5 +191,5 @@ const GetReporone = ()=>{
 
 
 
-export default ReportChart;
+export default ReportChartTwo;
 
