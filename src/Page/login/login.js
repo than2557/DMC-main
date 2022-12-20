@@ -7,6 +7,7 @@ import './login.css';
 
 
 
+
 function Login() {
 const [username, setUsername] = useState();
 const [password, setPassword] = useState();
@@ -21,8 +22,8 @@ const [password, setPassword] = useState();
     });
    let parseJSON =  JSON.parse(data)
     
-//const url = 'http://192.168.33.142:9876/DmscAuthorization/api/v1/login';
-const url = 'http://localhost:3005/login';
+const url = 'http://192.168.33.142:9876/DmscAuthorization/api/v1/login';
+// const url = 'http://localhost:3005/login';
  const datares = await postData(url, data);
  console.log("status"+datares.status);
 
@@ -31,8 +32,9 @@ const url = 'http://localhost:3005/login';
         buttons: false,
         timer: 2000,
       });
-    localStorage.setItem('accessToken',datares.token);
    
+    localStorage.setItem('accessToken',datares.token);
+  
     window.location.href = "/chartReport";
     console.log("token"+':'+datares.token);   
 
@@ -110,7 +112,7 @@ const url = 'http://localhost:3005/login';
       method: 'POST', 
       mode: 'cors',
       headers:{ 
-      'content-type': 'application/json;UTF-8'
+      'content-type': 'application/json;UTF-8' 
       }, 
       body: data 
     });

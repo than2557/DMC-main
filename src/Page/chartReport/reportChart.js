@@ -7,15 +7,14 @@ import {Button,Card,Row,Col,Container,Navbar,Nav,Jumbotron,InputGroup,Form,NavDr
 
 import LineChart from '../../component/LineChart';
 import logo from '../../img/icon.png';
-import swal from 'sweetalert2';
 
-
+import jwt_decode  from "jwt-decode";
+// import dataOption from '../chartReport/getoptionchart';   
 import 'chart.js/auto'; 
 
-function ReportChart() {
-  const navigate = useNavigate();
 
-//   let data_mock = {"type":1,"state":1,"year":"2022"}
+function ReportChart() {
+  
   const options = {
     responsive: true,
     maintainAspectRatio:false
@@ -35,20 +34,167 @@ function ReportChart() {
     "ธ.ค.",
     "ม.ค."
   ];
-  
+  let data 
 let LineData = {labels,datasets:[]};
-
-
+  const [arrDataOption, setArrData] = useState([]);
   const [type, setType] = useState();
   const [state, setState] = useState();
   const [year, setYear] = useState();
   const [ChartData,setChartData] = useState(LineData);
-  const [reportState1, setReportState] = useState();
+ const [ComTypeList,setComTypeList] = useState([]);
+ const [comtype,setComType] = useState()
+  const [optionData,setoptiondata] = useState();
+  const [id, setId] = useState();
+  const [usertype,setUserType] = useState();  
+  const [agency,setagency] = useState();
+
+let data_option;
+  let url = "http://localhost:3005/DmscReportGateway/api/v1/report02/systemlist";
+let data_option3;
+
+const fetchData = async() => {
+  await fetch(url,{
+    method:'POST', 
+  }).then(optionData =>optionData.json().then(data=>({data: data,
+    status: optionData.status})).then(res =>{
+      data_option  = res.data.systemlist;
+      
+      // console.log(data_option)
+      setArrData(data_option)
+      return data_option;
+    }));
+}
+
+
+const comType = async() =>{
+ // let urlR = "http://192.168.33.81:9877/DmscReportGateway/api/v1/report03/comtypelist";
+ let url = "http://localhost:3005/DmscReportGateway/api/v1/report03/comtypelist";
+  await fetch(url,{
+    method:'POST', 
+  }).then(optionData =>optionData.json().then(data=>({data: data})).then(res =>{
+      data_option3  = res.data.comtypelist;
+   //   console.log(data_option3)
+      setComTypeList(data_option3)
+      return data_option3;
+    }));
+  
+}
+useEffect(() => {
+  fetchData();
+  comType();
+}, [])
 
 
 
-const SerachData =  async() => {
-  // console.log({type,state,year})
+
+
+
+
+  
+  
+  let token = localStorage.getItem("accessToken");
+  let decodeJwt = jwt_decode(token);
+  // console.log(decodeJwt);
+  let Authorization = 'Bearer'+' '+token;
+ 
+ // let url = `http://192.168.33.81:9877/DmscReportGateway/api/v1/report02/systemlist`;
+ let optionTask 
+ let TaskData 
+
+ const SerachDataTree =  async() => {
+  
+  let data_res
+
+ data = {usertype,comtype,year};
+  
+  console.log(data);
+ 
+  // console.log(token);
+ 
+
+
+
+
+  // let url ='http://192.168.33.54:9877/DmscReportGateway/api/v1/report/01';
+  // let url = 'http://192.168.33.81:9877/DmscReportGateway/api/v1/report02/data';
+  let url = 'http://localhost:3005/reporttree'
+  // let url = 'http://localhost:3005/reportData';
+
+  const response =  await fetch(url,{
+    method:'POST', 
+    mode: 'cors',
+    body: JSON.stringify(data),
+    headers:{ 
+      'content-type': 'application/json;UTF-8',
+      'Authorization':Authorization
+    }
+  }).then(response =>response.json().then(data=>({data: data,
+        status: response.status})).then(res =>{
+          
+          data_res = res.data;
+          console.log(data_res);
+          if(data_res.status){
+
+            setChartData({labels,datasets:data_res.datasets})
+          }else{
+            setChartData({labels,datasets:[]})
+          }
+          
+      
+         
+        }));
+     
+      
+}
+
+
+const SerachDataTwo =  async() => {
+  
+  let data_res
+
+ data = {id,year};
+  
+  console.log(data);
+ 
+  // console.log(token);
+ 
+
+
+
+
+  // let url ='http://192.168.33.54:9877/DmscReportGateway/api/v1/report/01';
+  let url = 'http://192.168.33.81:9877/DmscReportGateway/api/v1/report02/data';
+  // let url = 'http://localhost:3005/reporttree'
+  // let url = 'http://localhost:3005/reportData';
+
+  const response =  await fetch(url,{
+    method:'POST', 
+    mode: 'cors',
+    body: JSON.stringify(data),
+    headers:{ 
+      'content-type': 'application/json;UTF-8',
+      'Authorization':Authorization
+    }
+  }).then(response =>response.json().then(data=>({data: data,
+        status: response.status})).then(res =>{
+          
+          data_res = res.data;
+          console.log(data_res);
+          if(data_res.status){
+
+            setChartData({labels,datasets:data_res.datasets})
+          }else{
+            setChartData({labels,datasets:[]})
+          }
+          
+      
+         
+        }));
+     
+      
+}
+
+const SerachDataone = async() =>{
   let data_res
 
   let data = {type,state,year};
@@ -60,7 +206,7 @@ const SerachData =  async() => {
 
   // let url ='http://192.168.33.54:9877/DmscReportGateway/api/v1/report/01';
   // let url = 'http://192.168.33.81:9877/DmscReportGateway/api/v1/report01/data';
-  let url = 'http://localhost:3005/reportData';
+  let url = 'http://localhost:3005/getreportone';
 
   const response =  await fetch(url,{
     method:'POST', 
@@ -85,21 +231,59 @@ const SerachData =  async() => {
       
          
         }));
-     
-      
+
+
 }
+
+
 const Logout = ()=>{
   localStorage.removeItem("accessToken");
   window.location.href = "/login";
 }
 const GetReportwo = ()=>{
   document.getElementById('report2').style.display ='block';
+  document.getElementById('report3').style.display = 'none';
   document.getElementById('report1').style.display = 'none';
+  setChartData({labels,datasets:[]});
 }
 const GetReporone = ()=>{
   document.getElementById('report2').style.display ='none';
   document.getElementById('report1').style.display = 'block';
+  document.getElementById('report3').style.display = 'none';
+  setChartData({labels,datasets:[]});
 }
+const GetReporoneTree = ()=>{
+
+  document.getElementById('report2').style.display ='none';
+  document.getElementById('report1').style.display = 'none';
+  document.getElementById('report3').style.display = 'block';
+  setChartData({labels,datasets:[]});
+}
+function checkpermission(event){
+  console.log(event.target.value);
+  let permission = parseInt(event.target.value);
+ 
+  switch(permission){
+    case 0:
+      document.getElementById('comtype').disabled= true;
+      document.getElementById('comtype').value = null;
+      setUserType(permission);
+      setComType(null);
+      break;
+    case 2:
+      document.getElementById('comtype').disabled= true;
+      document.getElementById('comtype').value = null;
+      setUserType(permission);
+      setComType(null);
+      break;
+    default:
+      document.getElementById('comtype').disabled= false;
+      setUserType(permission);
+      break;
+  }
+  
+}
+
   return (
     
 
@@ -108,9 +292,9 @@ const GetReporone = ()=>{
 
         <Navbar bg="light" expand="lg">
       <Container fluid>
-        <Navbar.Brand><img  class="Nav" src={logo} alt="Logo" /></Navbar.Brand>
+        <Navbar.Brand><img  className="Nav" src={logo} alt="Logo" /></Navbar.Brand>
         <Navbar.Toggle aria-controls="navbarScroll" />
-
+        {decodeJwt.uname}       
         <Navbar.Collapse id="navbarScroll">
           <Nav
             className="me-auto my-2 my-lg-0"
@@ -123,14 +307,15 @@ const GetReporone = ()=>{
              
           <NavDropdown   title="รายงาน" id="basic-nav-dropdown" style={{'margin-right':80}}>
               <NavDropdown.Item>
-              <a onClick={GetReportwo}>บัญชีผู้ใช้งานระบบบูรณาการ</a>
+              <a onClick={GetReporone} >หนังสือรับรองการแจ้ง/ใบอนุญาต</a>
+          
               </NavDropdown.Item>
               <NavDropdown.Item>
-                <a onClick={GetReporone} >หนังสือรับรองการแจ้ง/ใบอนุญาต</a>
+              <a onClick={GetReportwo}>บัญชีผู้ใช้งานระบบบูรณาการ</a>
               </NavDropdown.Item>
               {/* <NavDropdown.Divider /> */}
               <NavDropdown.Item href="#action/3.4">
-                บัญชีผู้ใช้งานระบบสนับสนุน
+             <a onClick={GetReporoneTree}>บัญชีผู้ใช้งานระบบสนับสนุน</a>  
               </NavDropdown.Item>
             </NavDropdown>
             
@@ -142,6 +327,67 @@ const GetReporone = ()=>{
     
     <br/>
     <br/>
+
+    <div className="card col-md-8 center" id="report3" style={{"display":"none"}}>
+      <input id="inputreport3" value="report3"  hidden/>
+  <div className="container">
+    รายงานบัญชีผู้ใช้งานระบบสนับสนุนพระราชบัญญัติเชื้อโรคและพิษจากสัตว์ออนไลน์
+  <div className="row">
+    <div className="col">
+ <br/>
+ <InputGroup className="mb-4">
+      <InputGroup.Text id="basic-addon1">สิทธิการใช้งาน </InputGroup.Text>
+      <Form.Select aria-label="Default select example" id="usertype" name="usertype" onChange={checkpermission}>
+      <option value="" >--สิทธิการใช้งาน--</option>
+      <option value="1" >ผู้ใช้งานทั้วไป</option>
+      <option value="2" >ผู้ดูแลระบบ</option>
+      <option value="0" >ไม่สมารถระบุได้</option>
+      </Form.Select>
+      </InputGroup> 
+    </div>
+    <div className="col">
+    <br/> 
+    <InputGroup className="mb-2">
+        <InputGroup.Text id="basic-addon1">ประเภทหน่วยงาน </InputGroup.Text>
+        <Form.Select aria-label="Default select example" id="comtype" name="comtype" onChange={e=>setComType(e.target.value)}>
+        <option value="0" selected="">--ประเภทหน่วยงาน--</option>
+        {
+        ComTypeList.map((e)=>(<option value={e}>{e}</option>))
+        }
+    </Form.Select>
+      </InputGroup>
+      {/* <InputGroup className="mb-4">
+      <InputGroup.Text id="basic-addon1">หน่วยงานเชื่อมโยง </InputGroup.Text>
+      <Form.Select aria-label="Default select example" id="agency" name="agency" onChange={e=>setagency(parseInt(e.target.value))}>
+      <option value="0" selected="">กรมการปกครอง</option>
+      <option value="1">กรมพัฒนาธุรกิจ</option>
+      <option value="2">กรมสรรพกร</option>
+      </Form.Select>
+      </InputGroup> */}
+    </div>
+    <div className="col">
+    <br/>
+    <InputGroup className="mb-2">
+      <InputGroup.Text id="basic-addon1">ปี</InputGroup.Text>
+      <Form.Select aria-label="Default select example" id="year" name="year" onChange={e=>setYear(e.target.value)}>
+      <option value="0" selected="">--เลือกปี--</option>
+      <option value="2022">2022</option>
+      <option value="2021">2021</option>
+      <option value="2020">2020</option>
+      <option value="2020">2019</option>
+      <option value="2020">2018</option>
+   
+      </Form.Select>
+      </InputGroup>
+    </div>
+    <div className="col">
+    <br/>
+      <Button onClick={SerachDataTree}>ค้นหาข้อมูล</Button>
+    </div>
+  </div>
+</div>
+  </div>
+    {/* end of form tree */}
     <div className="card col-md-8 center" id="report2" style={{"display":"none"}}>
       <input id="inputreport2" value="report2"  hidden/>
   <div className="container">
@@ -149,42 +395,45 @@ const GetReporone = ()=>{
   <div className="row">
     <div className="col">
  <br/>
-      <InputGroup className="mb-2">
-        <InputGroup.Text id="basic-addon1">ระบบงาน</InputGroup.Text>
-        <Form.Select aria-label="Default select example" id="type" name="type" onChange={e=>setType(parseInt(e.target.value))}>
-        <option value="0" selected="">--ระบบงาน--</option>
-      <option value="1">patact</option>
-      <option value="2">ศทส</option>
-    </Form.Select>
-      </InputGroup>
+    
     </div>
     <div className="col">
-    <br/>
-      <InputGroup className="mb-4">
+    <br/> 
+    <InputGroup className="mb-2">
+        <InputGroup.Text id="basic-addon1">ระบบงาน</InputGroup.Text>
+        <Form.Select aria-label="Default select example" id="id" name="id" onChange={e=>setId(parseInt(e.target.value))}>
+        <option value="0" selected="">--ระบบงาน--</option>
+        {arrDataOption.map((d)=>(<option key={d.id} id={d.id} value={d.id}>{d.name}</option>))}
+
+    </Form.Select>
+      </InputGroup>
+      {/* <InputGroup className="mb-4">
       <InputGroup.Text id="basic-addon1">หน่วยงานเชื่อมโยง </InputGroup.Text>
-      <Form.Select aria-label="Default select example" id="state" name="state" onChange={e=>setState(parseInt(e.target.value))}>
+      <Form.Select aria-label="Default select example" id="agency" name="agency" onChange={e=>setagency(parseInt(e.target.value))}>
       <option value="0" selected="">กรมการปกครอง</option>
       <option value="1">กรมพัฒนาธุรกิจ</option>
       <option value="2">กรมสรรพกร</option>
       </Form.Select>
-      </InputGroup>
+      </InputGroup> */}
     </div>
     <div className="col">
     <br/>
-      <InputGroup className="mb-2">
+    <InputGroup className="mb-2">
       <InputGroup.Text id="basic-addon1">ปี</InputGroup.Text>
       <Form.Select aria-label="Default select example" id="year" name="year" onChange={e=>setYear(e.target.value)}>
-      <option value="0" selected="">ปี</option>
+      <option value="0" selected="">--เลือกปี--</option>
       <option value="2022">2022</option>
       <option value="2021">2021</option>
       <option value="2020">2020</option>
+      <option value="2020">2019</option>
+      <option value="2020">2018</option>
    
       </Form.Select>
       </InputGroup>
     </div>
     <div className="col">
     <br/>
-      <Button onClick={SerachData}>ค้นหาข้อมูล</Button>
+      <Button onClick={SerachDataTwo}>ค้นหาข้อมูล</Button>
     </div>
   </div>
 </div>
@@ -229,17 +478,19 @@ const GetReporone = ()=>{
       <InputGroup className="mb-2">
       <InputGroup.Text id="basic-addon1">ปี</InputGroup.Text>
       <Form.Select aria-label="Default select example" id="year" name="year" onChange={e=>setYear(e.target.value)}>
-      <option value="0" selected="">ปี</option>
+      <option value="0" selected="">--เลือกปี--</option>
       <option value="2022">2022</option>
       <option value="2021">2021</option>
       <option value="2020">2020</option>
+      <option value="2020">2019</option>
+      <option value="2020">2018</option>
    
       </Form.Select>
       </InputGroup>
     </div>
     <div className="col">
     <br/>
-      <Button onClick={SerachData}>ค้นหาข้อมูล</Button>
+      <Button onClick={SerachDataone}>ค้นหาข้อมูล</Button>
     </div>
   </div>
 </div>
