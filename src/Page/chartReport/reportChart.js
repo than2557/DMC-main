@@ -2,13 +2,18 @@
 import { Link,HistoryRouterProps,redirect} from "react-router-dom";
 import { Route,Routes,BrowserRouter,useNavigate } from 'react-router-dom';
 import './chart.css';
-import React,{useState,SyntheticEvent,useEffect} from'react';
+import React,{useState,SyntheticEvent,useEffect,} from'react';
 import {Button,Card,Row,Col,Container,Navbar,Nav,Jumbotron,InputGroup,Form,NavDropdown} from 'react-bootstrap';
 
 import LineChart from '../../component/LineChart';
 import logo from '../../img/icon.png';
-
+import 'twin.macro';
 import jwt_decode  from "jwt-decode";
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+
+
+
+// import SideNavBar from "../../component/sideNavbar/sideNavbar";
 // import dataOption from '../chartReport/getoptionchart';   
 import 'chart.js/auto'; 
 
@@ -47,7 +52,7 @@ let LineData = {labels,datasets:[]};
   const [id, setId] = useState();
   const [usertype,setUserType] = useState();  
   const [agency,setagency] = useState();
-
+  
 let data_option;
   let url = "http://localhost:3005/DmscReportGateway/api/v1/report02/systemlist";
 let data_option3;
@@ -94,7 +99,7 @@ useEffect(() => {
   
   let token = localStorage.getItem("accessToken");
   let decodeJwt = jwt_decode(token);
-  // console.log(decodeJwt);
+  // console.log(decodeJwt.uname);
   let Authorization = 'Bearer'+' '+token;
  
  // let url = `http://192.168.33.81:9877/DmscReportGateway/api/v1/report02/systemlist`;
@@ -107,7 +112,7 @@ useEffect(() => {
 
  data = {usertype,comtype,year};
   
-  console.log(data);
+  // console.log(data);
  
   // console.log(token);
  
@@ -132,7 +137,7 @@ useEffect(() => {
         status: response.status})).then(res =>{
           
           data_res = res.data;
-          console.log(data_res);
+          // console.log(data_res);
           if(data_res.status){
 
             setChartData({labels,datasets:data_res.datasets})
@@ -154,7 +159,7 @@ const SerachDataTwo =  async() => {
 
  data = {id,year};
   
-  console.log(data);
+  // console.log(data);
  
   // console.log(token);
  
@@ -163,9 +168,9 @@ const SerachDataTwo =  async() => {
 
 
   // let url ='http://192.168.33.54:9877/DmscReportGateway/api/v1/report/01';
-  let url = 'http://192.168.33.81:9877/DmscReportGateway/api/v1/report02/data';
+  // let url = 'http://192.168.33.81:9877/DmscReportGateway/api/v1/report02/data';
   // let url = 'http://localhost:3005/reporttree'
-  // let url = 'http://localhost:3005/reportData';
+  let url = 'http://localhost:3005/reportData';
 
   const response =  await fetch(url,{
     method:'POST', 
@@ -179,7 +184,7 @@ const SerachDataTwo =  async() => {
         status: response.status})).then(res =>{
           
           data_res = res.data;
-          console.log(data_res);
+          // console.log(data_res);
           if(data_res.status){
 
             setChartData({labels,datasets:data_res.datasets})
@@ -199,9 +204,9 @@ const SerachDataone = async() =>{
 
   let data = {type,state,year};
   
-  console.log(data);
+
   let token = localStorage.getItem("accessToken");
-  console.log(token);
+
   let Authorization = 'Bearer'+' '+token;
 
   // let url ='http://192.168.33.54:9877/DmscReportGateway/api/v1/report/01';
@@ -220,7 +225,7 @@ const SerachDataone = async() =>{
         status: response.status})).then(res =>{
           // console.log(res);
           data_res = res.data;
-          console.log(data_res);
+          // console.log(data_res);
           if(data_res.status){
 
             setChartData({labels,datasets:data_res.datasets})
@@ -260,7 +265,7 @@ const GetReporoneTree = ()=>{
   setChartData({labels,datasets:[]});
 }
 function checkpermission(event){
-  console.log(event.target.value);
+  // console.log(event.target.value);
   let permission = parseInt(event.target.value);
  
   switch(permission){
@@ -290,19 +295,17 @@ function checkpermission(event){
 
     <div style={{"height":937}}>
 
-        <Navbar bg="light" expand="lg">
+        <Navbar bg="light"  expand="lg">
       <Container fluid>
         <Navbar.Brand><img  className="Nav" src={logo} alt="Logo" /></Navbar.Brand>
         <Navbar.Toggle aria-controls="navbarScroll" />
-        {decodeJwt.uname}       
+          
         <Navbar.Collapse id="navbarScroll">
           <Nav
             className="me-auto my-2 my-lg-0"
             style={{ maxHeight: '100px' }}
             navbarScroll
           >
-      
-   
           </Nav>
              
           <NavDropdown   title="รายงาน" id="basic-nav-dropdown" style={{'margin-right':80}}>
@@ -319,11 +322,18 @@ function checkpermission(event){
               </NavDropdown.Item>
             </NavDropdown>
             
-            <Button variant="outline-danger" onClick={Logout}>ออกจากระบบ</Button>
+            <NavDropdown   title={decodeJwt.uname} id="basic-nav-dropdown" style={{'margin-right':140}}>
+              <NavDropdown.Item>
+              <Button variant="outline-danger" onClick={Logout}>ออกจากระบบ</Button>
+              </NavDropdown.Item>
+            </NavDropdown>
        
         </Navbar.Collapse>
+        
       </Container>
     </Navbar>
+
+    {/* hello side bar*/}
     
     <br/>
     <br/>

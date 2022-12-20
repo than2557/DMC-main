@@ -10,11 +10,13 @@
     padding: 30px;
   }
   .wrapper {
-    height: 600px !important;
+    height: 480px !important;
     }
   .Nav{
     width: 30px !important;
     margin-left: 10px;
   }
-    
+  #chartID{
+    height:auto !important;
+  }
   
