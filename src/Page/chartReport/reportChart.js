@@ -13,7 +13,7 @@ import  logout from '../../img/logout_FILL0_wght400_GRAD0_opsz48.svg';
 import 'twin.macro';
 import jwt_decode  from "jwt-decode";
 import 'chart.js/auto'; 
-
+import { MDBFooter, MDBContainer, MDBRow, MDBCol, MDBIcon } from 'mdb-react-ui-kit';
 
 function ReportChart() {
   
@@ -306,7 +306,7 @@ function checkpermission(event){
     
 
 
-    <div style={{"height":1980}}>
+    <div style={{"height":970}}>
       
         <Navbar bg="light"  expand="lg" className="backgourndColormand">
       <Container fluid>
@@ -610,17 +610,26 @@ lab_profile
   </div>
 </div>
   </div>
-<br/>
-
+  <br/>
   <div className="card container">
-    <div className="row" id="chartID">
+    <div className="row" id="chartID" style={{height:450}}>
 
     <LineChart options={options} ChartData={ChartData}/>
     </div>
    
       </div>
-{/* 
-      <Footer/> */}
+      &nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;
+      <MDBFooter bgColor='light'className='text-center text-lg-start text-muted'>
+      &nbsp;&nbsp;&nbsp;
+      <div className='text-center p-4' style={{ backgroundColor: 'rgba(0, 0, 0, 0.05)' }}>
+        © 2022 Copyright:
+        <a className='text-reset fw-bold' href=''>
+        ระบบสนับสนุนพระราชบัญญัติเชื้อโรคและพิษจากสัตว์ออนไลน์ V1.0
+        </a>
+      </div>
+    </MDBFooter>
     </div> 
 
   
