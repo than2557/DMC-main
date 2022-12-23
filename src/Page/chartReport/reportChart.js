@@ -1,20 +1,17 @@
 
-import { Link,HistoryRouterProps,redirect} from "react-router-dom";
-import { Route,Routes,BrowserRouter,useNavigate } from 'react-router-dom';
 import './chart.css';
-import React,{useState,SyntheticEvent,useEffect,} from'react';
-import {Button,Card,Row,Col,Container,Navbar,Nav,Jumbotron,InputGroup,Form,NavDropdown} from 'react-bootstrap';
+// import './nightmode.css';
+import React,{useState,useEffect,} from'react';
+import {Button,Container,Navbar,Nav,InputGroup,Form,NavDropdown} from 'react-bootstrap';
 
 import LineChart from '../../component/LineChart';
 import logo from '../../img/icon.png';
+import account from '../../img/account_circle_FILL0_wght400_GRAD0_opsz48.svg';
+import  lightbulb from '../../img/lightbulb_FILL0_wght400_GRAD0_opsz48.svg';
+import monitoring from '../../img/monitoring_FILL0_wght400_GRAD0_opsz48.svg';
+import  logout from '../../img/logout_FILL0_wght400_GRAD0_opsz48.svg';
 import 'twin.macro';
 import jwt_decode  from "jwt-decode";
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-
-
-
-// import SideNavBar from "../../component/sideNavbar/sideNavbar";
-// import dataOption from '../chartReport/getoptionchart';   
 import 'chart.js/auto'; 
 
 
@@ -51,7 +48,7 @@ let LineData = {labels,datasets:[]};
   const [optionData,setoptiondata] = useState();
   const [id, setId] = useState();
   const [usertype,setUserType] = useState();  
-  const [agency,setagency] = useState();
+  const [antigen,setantigen] = useState();
   
 let data_option;
   let url = "http://localhost:3005/DmscReportGateway/api/v1/report02/systemlist";
@@ -103,8 +100,7 @@ useEffect(() => {
   let Authorization = 'Bearer'+' '+token;
  
  // let url = `http://192.168.33.81:9877/DmscReportGateway/api/v1/report02/systemlist`;
- let optionTask 
- let TaskData 
+
 
  const SerachDataTree =  async() => {
   
@@ -122,10 +118,10 @@ useEffect(() => {
 
   // let url ='http://192.168.33.54:9877/DmscReportGateway/api/v1/report/01';
   // let url = 'http://192.168.33.81:9877/DmscReportGateway/api/v1/report02/data';
-  let url = 'http://localhost:3005/reporttree'
+  
   // let url = 'http://localhost:3005/reportData';
 
-  const response =  await fetch(url,{
+  const response =  await fetch(process.env.REACT_APP_URL_REPORT_TREE,{
     method:'POST', 
     mode: 'cors',
     body: JSON.stringify(data),
@@ -169,10 +165,10 @@ const SerachDataTwo =  async() => {
 
   // let url ='http://192.168.33.54:9877/DmscReportGateway/api/v1/report/01';
   // let url = 'http://192.168.33.81:9877/DmscReportGateway/api/v1/report02/data';
-  // let url = 'http://localhost:3005/reporttree'
-  let url = 'http://localhost:3005/reportData';
+  // // let url = 'http://localhost:3005/reporttree'
+  // let url = 'http://localhost:3005/reportData';
 
-  const response =  await fetch(url,{
+  const response =  await fetch(process.env.REACT_APP_URL_REPORT_TWO,{
     method:'POST', 
     mode: 'cors',
     body: JSON.stringify(data),
@@ -211,9 +207,10 @@ const SerachDataone = async() =>{
 
   // let url ='http://192.168.33.54:9877/DmscReportGateway/api/v1/report/01';
   // let url = 'http://192.168.33.81:9877/DmscReportGateway/api/v1/report01/data';
+   // let url = 'http://192.168.33.81:9877/DmscReportGateway/api/v1/report01/data';
   let url = 'http://localhost:3005/getreportone';
 
-  const response =  await fetch(url,{
+  const response =  await fetch(process.env.REACT_APP_URL_REPORT_ONE,{
     method:'POST', 
     mode: 'cors',
     body: JSON.stringify(data),
@@ -250,12 +247,14 @@ const GetReportwo = ()=>{
   document.getElementById('report3').style.display = 'none';
   document.getElementById('report1').style.display = 'none';
   setChartData({labels,datasets:[]});
+  document.getElementById('Excel1').style.display = 'none';
 }
 const GetReporone = ()=>{
   document.getElementById('report2').style.display ='none';
   document.getElementById('report1').style.display = 'block';
   document.getElementById('report3').style.display = 'none';
   setChartData({labels,datasets:[]});
+  document.getElementById('Excel1').style.display = 'none';
 }
 const GetReporoneTree = ()=>{
 
@@ -263,7 +262,20 @@ const GetReporoneTree = ()=>{
   document.getElementById('report1').style.display = 'none';
   document.getElementById('report3').style.display = 'block';
   setChartData({labels,datasets:[]});
+  document.getElementById('Excel1').style.display = 'none';
 }
+const getExcelData = ()=>{
+  document.getElementById('report2').style.display ='none';
+  document.getElementById('report1').style.display = 'none';
+  document.getElementById('report3').style.display = 'none';
+  document.getElementById('Excel1').style.display = 'block';
+  setChartData({labels,datasets:[]});
+}
+
+
+// const optionsExcelAntigen = selectExcel(Authorization);
+
+
 function checkpermission(event){
   // console.log(event.target.value);
   let permission = parseInt(event.target.value);
@@ -289,13 +301,14 @@ function checkpermission(event){
   
 }
 
+// console.log(antigen);
   return (
     
 
 
-    <div style={{"height":937}}>
-
-        <Navbar bg="light"  expand="lg">
+    <div style={{"height":1980}}>
+      
+        <Navbar bg="light"  expand="lg" className="backgourndColormand">
       <Container fluid>
         <Navbar.Brand><img  className="Nav" src={logo} alt="Logo" /></Navbar.Brand>
         <Navbar.Toggle aria-controls="navbarScroll" />
@@ -306,9 +319,51 @@ function checkpermission(event){
             style={{ maxHeight: '100px' }}
             navbarScroll
           >
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   DMC-REPORT
           </Nav>
-             
-          <NavDropdown   title="รายงาน" id="basic-nav-dropdown" style={{'margin-right':80}}>
+          {/* <span class="material-symbols-outlined">
+lab_profile
+</span>
+&nbsp;&nbsp;
+          <NavDropdown   title="รายงานEXCELL" id="basic-nav-dropdown" style={{'margin-right':50}}>
+            
+              <NavDropdown.Item>
+              <a onClick={getExcelData}>excell01</a>
+              </NavDropdown.Item>
+
+              <NavDropdown.Item>
+              <a>excell02</a>
+              </NavDropdown.Item>
+ 
+              <NavDropdown.Item>
+             <a >excell03</a>  
+              </NavDropdown.Item>
+              
+              <NavDropdown.Item >
+              <a >excell04</a>  
+              </NavDropdown.Item>
+              
+              <NavDropdown.Item>
+              <a>excell05</a>
+          
+              </NavDropdown.Item>
+              
+              <NavDropdown.Item>
+              <a>excell06</a>
+          
+              </NavDropdown.Item>
+              
+              <NavDropdown.Item>
+              <a>excell07</a>
+          
+              </NavDropdown.Item>
+              
+            </NavDropdown> */}
+          <span class="material-symbols-outlined">
+          <img  className="Nav" src={monitoring} alt="monitoring" />
+</span>
+&nbsp;&nbsp;&nbsp; <NavDropdown   title="รายงาน" id="basic-nav-dropdown" style={{'margin-right':20}}>
+            
               <NavDropdown.Item>
               <a onClick={GetReporone} >หนังสือรับรองการแจ้ง/ใบอนุญาต</a>
           
@@ -317,27 +372,75 @@ function checkpermission(event){
               <a onClick={GetReportwo}>บัญชีผู้ใช้งานระบบบูรณาการ</a>
               </NavDropdown.Item>
               {/* <NavDropdown.Divider /> */}
-              <NavDropdown.Item href="#action/3.4">
+              <NavDropdown.Item>
              <a onClick={GetReporoneTree}>บัญชีผู้ใช้งานระบบสนับสนุน</a>  
               </NavDropdown.Item>
+              
             </NavDropdown>
-            
-            <NavDropdown   title={decodeJwt.uname} id="basic-nav-dropdown" style={{'margin-right':140}}>
+            <span class="material-symbols-outlined">
+            <img  className="Nav" src={account} alt="account" />  
+</span>&nbsp;&nbsp;&nbsp;
+            <NavDropdown   title={decodeJwt.uname} id="basic-nav-dropdown" style={{'margin-right':50}}>
               <NavDropdown.Item>
-              <Button variant="outline-danger" onClick={Logout}>ออกจากระบบ</Button>
+              <button  type="button" class="btn btn-light" onClick={Logout}>ออกจากระบบ     <span class="material-symbols-outlined">
+            <img  className="Nav" src={logout} alt="logout" />  
+</span></button>
+         
               </NavDropdown.Item>
             </NavDropdown>
        
         </Navbar.Collapse>
-        
+        <span class="material-symbols-outlined">
+<img  className="Nav" src={lightbulb} alt="lightbulb" />  
+</span>
       </Container>
     </Navbar>
 
     {/* hello side bar*/}
     
     <br/>
-    <br/>
 
+   
+{/* excel data  begin*/}
+{/* <div className="card col-md-8 center" id="Excel1" style={{"display":"none"}}>
+      
+  <div className="container">
+    รายงานEXCEL 1
+  <div className="row">
+    <div className="col">
+ <br/>
+ <InputGroup className="mb-4">
+      <InputGroup.Text id="basic-addon1">รหัสเชื้อโรค </InputGroup.Text>
+      <Select className="basic-multi-select selectEXcelOne"
+                 classNamePrefix="หน่วยงาน"
+                 isMulti
+           options={optionsExcelAntigen} id="Antigen" name="Antigen" onChange={(chioce) => {setantigen(chioce)}} />
+      </InputGroup> 
+    </div>
+    <div className="col">
+    <br/> 
+    <InputGroup className="mb-3">
+        <InputGroup.Text id="basic-addon1">หน่วยงาน </InputGroup.Text>
+        <Form.Control
+          aria-label="Default"
+          aria-describedby="inputGroup-sizing-default"
+          id="username" name="username"
+        />
+      </InputGroup>
+ 
+    </div>
+ 
+    <div className="col">
+    <br/>
+  
+      <Button onClick={SerachDataTree}>ค้นหาข้อมูล</Button>
+    </div>
+    
+  </div>
+</div>
+  </div> */}
+
+{/* excel data end*/}
     <div className="card col-md-8 center" id="report3" style={{"display":"none"}}>
       <input id="inputreport3" value="report3"  hidden/>
   <div className="container">
@@ -392,8 +495,10 @@ function checkpermission(event){
     </div>
     <div className="col">
     <br/>
+  
       <Button onClick={SerachDataTree}>ค้นหาข้อมูล</Button>
     </div>
+    
   </div>
 </div>
   </div>
@@ -410,7 +515,7 @@ function checkpermission(event){
     <div className="col">
     <br/> 
     <InputGroup className="mb-2">
-        <InputGroup.Text id="basic-addon1">ระบบงาน</InputGroup.Text>
+        <InputGroup.Text id="basic-addon1" style={{height:40}}>ระบบงาน</InputGroup.Text>
         <Form.Select aria-label="Default select example" id="id" name="id" onChange={e=>setId(parseInt(e.target.value))}>
         <option value="0" selected="">--ระบบงาน--</option>
         {arrDataOption.map((d)=>(<option key={d.id} id={d.id} value={d.id}>{d.name}</option>))}
@@ -429,7 +534,7 @@ function checkpermission(event){
     <div className="col">
     <br/>
     <InputGroup className="mb-2">
-      <InputGroup.Text id="basic-addon1">ปี</InputGroup.Text>
+      <InputGroup.Text id="basic-addon1"  style={{height:40}}>ปี</InputGroup.Text>
       <Form.Select aria-label="Default select example" id="year" name="year" onChange={e=>setYear(e.target.value)}>
       <option value="0" selected="">--เลือกปี--</option>
       <option value="2022">2022</option>
@@ -458,7 +563,7 @@ function checkpermission(event){
     <div className="col">
  <br/>
       <InputGroup className="mb-2">
-        <InputGroup.Text id="basic-addon1">ประเภท</InputGroup.Text>
+        <InputGroup.Text id="basic-addon1"  style={{height:40}}>ประเภท</InputGroup.Text>
         <Form.Select aria-label="Default select example" id="type" name="type" onChange={e=>setType(parseInt(e.target.value))}>
         <option value="0" selected="">เลือกประเภท</option>
       <option value="1">ใบอนุญาต</option>
@@ -469,7 +574,7 @@ function checkpermission(event){
     <div className="col">
     <br/>
       <InputGroup className="mb-4">
-      <InputGroup.Text id="basic-addon1">สถานะ</InputGroup.Text>
+      <InputGroup.Text id="basic-addon1"  style={{height:40}}>สถานะ</InputGroup.Text>
       <Form.Select aria-label="Default select example" id="state" name="state" onChange={e=>setState(parseInt(e.target.value))}>
       <option value="0" selected="">รอยืนเอกสาร</option>
       <option value="1">ยื่นคำขอ</option>
@@ -486,7 +591,7 @@ function checkpermission(event){
     <div className="col">
     <br/>
       <InputGroup className="mb-2">
-      <InputGroup.Text id="basic-addon1">ปี</InputGroup.Text>
+      <InputGroup.Text id="basic-addon1"  style={{height:40}}>ปี</InputGroup.Text>
       <Form.Select aria-label="Default select example" id="year" name="year" onChange={e=>setYear(e.target.value)}>
       <option value="0" selected="">--เลือกปี--</option>
       <option value="2022">2022</option>
@@ -505,17 +610,19 @@ function checkpermission(event){
   </div>
 </div>
   </div>
+<br/>
 
-
-  <div className="container">
+  <div className="card container">
     <div className="row" id="chartID">
 
     <LineChart options={options} ChartData={ChartData}/>
     </div>
    
       </div>
+{/* 
+      <Footer/> */}
     </div> 
- 
+
   
   );
 }

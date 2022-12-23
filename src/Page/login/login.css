@@ -1,6 +1,8 @@
 html {
   z-index: -1;
-  background-color: #99bda2;
+  --gradDark: hsl(144, 39%, 28%);
+  --gradLight: hsl(165, 38%, 35%);
+  background: linear-gradient(to bottom, var(--gradDark), var(--gradLight));
 }
 
 

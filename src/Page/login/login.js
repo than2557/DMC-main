@@ -22,17 +22,12 @@ const [password, setPassword] = useState();
     });
    let parseJSON =  JSON.parse(data)
     
-const url = 'http://192.168.33.142:9876/DmscAuthorization/api/v1/login';
-// const url = 'http://localhost:3005/login';
+// const url = 'http://192.168.33.142:9876/DmscAuthorization/api/v1/login';
+const url = 'http://localhost:3005/login';
  const datares = await postData(url, data);
  console.log("status"+datares.status);
 
- if(datares.status){
-    new swal("Success", datares.message, "success", {
-        buttons: false,
-        timer: 2000,
-      });
-   
+ if(datares.status){   
     localStorage.setItem('accessToken',datares.token);
   
     window.location.href = "/chartReport";
