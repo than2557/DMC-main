@@ -1,5 +1,5 @@
 import React,{useState,SyntheticEvent} from'react';
-import {Form,InputGroup} from 'react-bootstrap';
+import {Form,InputGroup,form} from 'react-bootstrap';
 import logo from '../../img/icon.png';
 
 import swal from 'sweetalert2';
@@ -12,6 +12,7 @@ function Login() {
 const [username, setUsername] = useState();
 const [password, setPassword] = useState();
 //http://192.168.33.142:9876/DmscAuthorization/api/v1/login
+
   const Login = async(e:SyntheticEvent) => {
   e.preventDefault();
     console.log({username,password,"appid":"01"})
@@ -23,8 +24,9 @@ const [password, setPassword] = useState();
    let parseJSON =  JSON.parse(data)
     
 // const url = 'http://192.168.33.142:9876/DmscAuthorization/api/v1/login';
-const url = 'http://localhost:3005/login';
- const datares = await postData(url, data);
+// // const url = process.env.REACT_APP_LOGIN_DMC;
+// console.log(process.env.REACT_APP_LGIN_APP)
+ const datares = await postData(process.env.REACT_APP_LGIN_APP, data);
  console.log("status"+datares.status);
 
  if(datares.status){   
@@ -107,6 +109,7 @@ const url = 'http://localhost:3005/login';
       method: 'POST', 
       mode: 'cors',
       headers:{ 
+        'Access-Control-Allow-Origin': '*',
       'content-type': 'application/json;UTF-8' 
       }, 
       body: data 

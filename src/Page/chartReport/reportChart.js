@@ -13,7 +13,8 @@ import  logout from '../../img/logout_FILL0_wght400_GRAD0_opsz48.svg';
 import 'twin.macro';
 import jwt_decode  from "jwt-decode";
 import 'chart.js/auto'; 
-import { MDBFooter, MDBContainer, MDBRow, MDBCol, MDBIcon } from 'mdb-react-ui-kit';
+import { MDBFooter } from 'mdb-react-ui-kit';
+import MovingText from 'react-moving-text'
 
 function ReportChart() {
   
@@ -51,17 +52,16 @@ let LineData = {labels,datasets:[]};
   const [antigen,setantigen] = useState();
   
 let data_option;
-  let url = "http://localhost:3005/DmscReportGateway/api/v1/report02/systemlist";
+
 let data_option3;
 
 const fetchData = async() => {
-  await fetch(url,{
+ let url ="http://localhost:9877/DmscReportGateway/api/v1/chart/report02/systemlist";
+  await fetch(process.env.REACT_APP_SYSTEM_LIST_R02,{
     method:'POST', 
   }).then(optionData =>optionData.json().then(data=>({data: data,
     status: optionData.status})).then(res =>{
       data_option  = res.data.systemlist;
-      
-      // console.log(data_option)
       setArrData(data_option)
       return data_option;
     }));
@@ -69,14 +69,14 @@ const fetchData = async() => {
 
 
 const comType = async() =>{
- // let urlR = "http://192.168.33.81:9877/DmscReportGateway/api/v1/report03/comtypelist";
- let url = "http://localhost:3005/DmscReportGateway/api/v1/report03/comtypelist";
-  await fetch(url,{
+ // let urlR = "http://localhost:9877/DmscReportGateway/api/v1/report03/comtypelist";
+ let url = "http://localhost:9877/DmscReportGateway/api/v1/chart/report03/comtypelist";
+  await fetch(process.env.REACT_APP_SYSTEM_LIST_R03,{
     method:'POST', 
   }).then(optionData =>optionData.json().then(data=>({data: data})).then(res =>{
       data_option3  = res.data.comtypelist;
-   //   console.log(data_option3)
-      setComTypeList(data_option3)
+     console.log(data_option3)
+     setComTypeList(data_option3);
       return data_option3;
     }));
   
@@ -306,7 +306,7 @@ function checkpermission(event){
     
 
 
-    <div style={{"height":970}}>
+    <div style={{"height":970,"background-color": 'rgb(175 165 165 / 20%)'}}>
       
         <Navbar bg="light"  expand="lg" className="backgourndColormand">
       <Container fluid>
@@ -319,7 +319,19 @@ function checkpermission(event){
             style={{ maxHeight: '100px' }}
             navbarScroll
           >
-         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   DMC-REPORT
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+         
+
+<MovingText
+ type="effect3D"
+ duration="3000ms"
+ delay="20s"
+ direction="normal"
+ timing="ease-in-out"
+ iteration="infinite"
+ fillMode="backwards">
+  DMSC - REPORT
+</MovingText> 
           </Nav>
           {/* <span class="material-symbols-outlined">
 lab_profile
@@ -365,15 +377,15 @@ lab_profile
 &nbsp;&nbsp;&nbsp; <NavDropdown   title="รายงาน" id="basic-nav-dropdown" style={{'margin-right':20}}>
             
               <NavDropdown.Item>
-              <a onClick={GetReporone} >หนังสือรับรองการแจ้ง/ใบอนุญาต</a>
+              <p onClick={GetReporone} >หนังสือรับรองการแจ้ง/ใบอนุญาต</p>
           
               </NavDropdown.Item>
               <NavDropdown.Item>
-              <a onClick={GetReportwo}>บัญชีผู้ใช้งานระบบบูรณาการ</a>
+              <p onClick={GetReportwo}>บัญชีผู้ใช้งานระบบบูรณาการ</p>
               </NavDropdown.Item>
               {/* <NavDropdown.Divider /> */}
               <NavDropdown.Item>
-             <a onClick={GetReporoneTree}>บัญชีผู้ใช้งานระบบสนับสนุน</a>  
+             <p onClick={GetReporoneTree}>บัญชีผู้ใช้งานระบบสนับสนุน</p>  
               </NavDropdown.Item>
               
             </NavDropdown>
@@ -441,15 +453,15 @@ lab_profile
   </div> */}
 
 {/* excel data end*/}
-    <div className="card col-md-8 center" id="report3" style={{"display":"none"}}>
+    <div className="card col-md-8 center" id="report3" style={{"display":"none","width":1000,"height":100}}>
       <input id="inputreport3" value="report3"  hidden/>
   <div className="container">
-    รายงานบัญชีผู้ใช้งานระบบสนับสนุนพระราชบัญญัติเชื้อโรคและพิษจากสัตว์ออนไลน์
+  <p style={{"margin-top":-25}}> รายงานบัญชีผู้ใช้งานระบบสนับสนุนพระราชบัญญัติเชื้อโรคและพิษจากสัตว์ออนไลน์ </p>
   <div className="row">
     <div className="col">
- <br/>
+
  <InputGroup className="mb-4">
-      <InputGroup.Text id="basic-addon1">สิทธิการใช้งาน </InputGroup.Text>
+      <InputGroup.Text id="basic-addon1"  style={{height:40}}>สิทธิการใช้งาน </InputGroup.Text>
       <Form.Select aria-label="Default select example" id="usertype" name="usertype" onChange={checkpermission}>
       <option value="" >--สิทธิการใช้งาน--</option>
       <option value="1" >ผู้ใช้งานทั้วไป</option>
@@ -459,9 +471,9 @@ lab_profile
       </InputGroup> 
     </div>
     <div className="col">
-    <br/> 
+    
     <InputGroup className="mb-2">
-        <InputGroup.Text id="basic-addon1">ประเภทหน่วยงาน </InputGroup.Text>
+        <InputGroup.Text id="basic-addon1"  style={{height:40}}>ประเภทหน่วยงาน </InputGroup.Text>
         <Form.Select aria-label="Default select example" id="comtype" name="comtype" onChange={e=>setComType(e.target.value)}>
         <option value="0" selected="">--ประเภทหน่วยงาน--</option>
         {
@@ -479,9 +491,9 @@ lab_profile
       </InputGroup> */}
     </div>
     <div className="col">
-    <br/>
+  
     <InputGroup className="mb-2">
-      <InputGroup.Text id="basic-addon1">ปี</InputGroup.Text>
+      <InputGroup.Text id="basic-addon1"  style={{height:40}}>ปี</InputGroup.Text>
       <Form.Select aria-label="Default select example" id="year" name="year" onChange={e=>setYear(e.target.value)}>
       <option value="0" selected="">--เลือกปี--</option>
       <option value="2022">2022</option>
@@ -494,8 +506,6 @@ lab_profile
       </InputGroup>
     </div>
     <div className="col">
-    <br/>
-  
       <Button onClick={SerachDataTree}>ค้นหาข้อมูล</Button>
     </div>
     
@@ -503,17 +513,17 @@ lab_profile
 </div>
   </div>
     {/* end of form tree */}
-    <div className="card col-md-8 center" id="report2" style={{"display":"none"}}>
+    <div className="card col-md-8 center" id="report2" style={{"display":"none","width":1000,"height":100}}>
       <input id="inputreport2" value="report2"  hidden/>
   <div className="container">
-      รายงานบัญชีผู้ใช้งานระบบบูรณาการข้อมูลประชาขนและการบริการภาครัฐ
+  <p style={{"margin-top":-25}}>  รายงานบัญชีผู้ใช้งานระบบบูรณาการข้อมูลประชาขนและการบริการภาครัฐ</p>
   <div className="row">
     <div className="col">
- <br/>
+
     
     </div>
     <div className="col">
-    <br/> 
+    
     <InputGroup className="mb-2">
         <InputGroup.Text id="basic-addon1" style={{height:40}}>ระบบงาน</InputGroup.Text>
         <Form.Select aria-label="Default select example" id="id" name="id" onChange={e=>setId(parseInt(e.target.value))}>
@@ -532,7 +542,7 @@ lab_profile
       </InputGroup> */}
     </div>
     <div className="col">
-    <br/>
+   
     <InputGroup className="mb-2">
       <InputGroup.Text id="basic-addon1"  style={{height:40}}>ปี</InputGroup.Text>
       <Form.Select aria-label="Default select example" id="year" name="year" onChange={e=>setYear(e.target.value)}>
@@ -547,7 +557,7 @@ lab_profile
       </InputGroup>
     </div>
     <div className="col">
-    <br/>
+    
       <Button onClick={SerachDataTwo}>ค้นหาข้อมูล</Button>
     </div>
   </div>
@@ -555,13 +565,13 @@ lab_profile
   </div>
 {/* <div>end form report 2</div> */}
 
-  <div className="card col-md-8 center" id="report1" style={{"display":"block"}}>
+  <div className="card col-md-8 center" id="report1" style={{"display":"block","width":1000,"height":100}}>
   <input id="inputreport1" value="report1"  hidden/>
   <div className="container">
-  รายงานผลการดำเนินการเกี่ยวกับหนังสือรับรองการแจ้ง/ใบอนุญาต
+<p style={{"margin-top":-25}}>  รายงานผลการดำเนินการเกี่ยวกับหนังสือรับรองการแจ้ง/ใบอนุญาต</p>
   <div className="row">
     <div className="col">
- <br/>
+ 
       <InputGroup className="mb-2">
         <InputGroup.Text id="basic-addon1"  style={{height:40}}>ประเภท</InputGroup.Text>
         <Form.Select aria-label="Default select example" id="type" name="type" onChange={e=>setType(parseInt(e.target.value))}>
@@ -572,7 +582,7 @@ lab_profile
       </InputGroup>
     </div>
     <div className="col">
-    <br/>
+
       <InputGroup className="mb-4">
       <InputGroup.Text id="basic-addon1"  style={{height:40}}>สถานะ</InputGroup.Text>
       <Form.Select aria-label="Default select example" id="state" name="state" onChange={e=>setState(parseInt(e.target.value))}>
@@ -589,7 +599,7 @@ lab_profile
       </InputGroup>
     </div>
     <div className="col">
-    <br/>
+  
       <InputGroup className="mb-2">
       <InputGroup.Text id="basic-addon1"  style={{height:40}}>ปี</InputGroup.Text>
       <Form.Select aria-label="Default select example" id="year" name="year" onChange={e=>setYear(e.target.value)}>
@@ -604,7 +614,7 @@ lab_profile
       </InputGroup>
     </div>
     <div className="col">
-    <br/>
+ 
       <Button onClick={SerachDataone}>ค้นหาข้อมูล</Button>
     </div>
   </div>
@@ -621,15 +631,18 @@ lab_profile
       &nbsp;&nbsp;&nbsp;
       &nbsp;&nbsp;&nbsp;
       &nbsp;&nbsp;&nbsp;
-      <MDBFooter bgColor='light'className='text-center text-lg-start text-muted'>
       &nbsp;&nbsp;&nbsp;
-      <div className='text-center p-4' style={{ backgroundColor: 'rgba(0, 0, 0, 0.05)' }}>
-        © 2022 Copyright:
-        <a className='text-reset fw-bold' href=''>
+      
+
+<MDBFooter bgColor='light' className='text-center text-lg-left backgourndColormand' style={{height:55}}>
+      <div className='text-center p-3'>
+        &copy; {new Date().getFullYear()} Copyright:{' '}
+        <a className='text-dark' >
         ระบบสนับสนุนพระราชบัญญัติเชื้อโรคและพิษจากสัตว์ออนไลน์ V1.0
         </a>
       </div>
     </MDBFooter>
+
     </div> 
 
   
