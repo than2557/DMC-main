@@ -56,9 +56,9 @@ let data_option;
 let data_option3;
 
 const fetchData = async() => {
- let url ="http://localhost:9877/DmscReportGateway/api/v1/chart/report02/systemlist";
+//  let url ="http://localhost:9877/DmscReportGateway/api/v1/chart/report02/systemlist";
   await fetch(process.env.REACT_APP_SYSTEM_LIST_R02,{
-    method:'POST', 
+    method:'GET', 
   }).then(optionData =>optionData.json().then(data=>({data: data,
     status: optionData.status})).then(res =>{
       data_option  = res.data.systemlist;
@@ -70,17 +70,20 @@ const fetchData = async() => {
 
 const comType = async() =>{
  // let urlR = "http://localhost:9877/DmscReportGateway/api/v1/report03/comtypelist";
- let url = "http://localhost:9877/DmscReportGateway/api/v1/chart/report03/comtypelist";
-  await fetch(process.env.REACT_APP_SYSTEM_LIST_R03,{
-    method:'POST', 
+//  let url = "http://localhost:9877/DmscReportGateway/api/v1/chart/report03/comtypelist";
+console.log(process.env.REACT_APP_ComType_List_R03)
+  await fetch(process.env.REACT_APP_ComType_List_R03,{
+    method:'GET', 
   }).then(optionData =>optionData.json().then(data=>({data: data})).then(res =>{
       data_option3  = res.data.comtypelist;
      console.log(data_option3)
-     setComTypeList(data_option3);
+   
       return data_option3;
     }));
   
 }
+
+setComTypeList(data_option3);
 useEffect(() => {
   fetchData();
   comType();
