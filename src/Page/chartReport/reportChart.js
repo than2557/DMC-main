@@ -15,7 +15,8 @@ import jwt_decode  from "jwt-decode";
 import 'chart.js/auto'; 
 import { MDBFooter } from 'mdb-react-ui-kit';
 import MovingText from 'react-moving-text'
-
+import axios from 'axios';
+import Swal from 'sweetalert2'
 function ReportChart() {
   
   const options = {
@@ -55,39 +56,41 @@ let data_option;
 
 let data_option3;
 
-const fetchData = async() => {
-//  let url ="http://localhost:9877/DmscReportGateway/api/v1/chart/report02/systemlist";
-  await fetch(process.env.REACT_APP_SYSTEM_LIST_R02,{
-    method:'GET', 
-  }).then(optionData =>optionData.json().then(data=>({data: data,
-    status: optionData.status})).then(res =>{
-      data_option  = res.data.systemlist;
-      setArrData(data_option)
-      return data_option;
-    }));
-}
+// const fetchData = async() => {
+// //  let url ="http://localhost:9877/DmscReportGateway/api/v1/chart/report02/systemlist";
+//   await fetch(process.env.REACT_APP_SYSTEM_LIST_R02,{
+//     method:'GET', 
+//   }).then(optionData =>optionData.json().then(data=>({data: data,
+//     status: optionData.status})).then(res =>{
+//       data_option  = res.data.systemlist;
+//       setArrData(data_option)
+//       return data_option;
+//     }));
+// }
+
+
 
 
 const comType = async() =>{
  // let urlR = "http://localhost:9877/DmscReportGateway/api/v1/report03/comtypelist";
 //  let url = "http://localhost:9877/DmscReportGateway/api/v1/chart/report03/comtypelist";
-console.log(process.env.REACT_APP_ComType_List_R03)
+// console.log(process.env.REACT_APP_ComType_List_R03)
   await fetch(process.env.REACT_APP_ComType_List_R03,{
     method:'GET', 
   }).then(optionData =>optionData.json().then(data=>({data: data})).then(res =>{
-      data_option3  = res.data.comtypelist;
+      data_option3  = res.data.data.comtypelist;
      console.log(data_option3)
-   
+     setComTypeList(data_option3)
       return data_option3;
     }));
   
 }
 
-setComTypeList(data_option3);
-useEffect(() => {
-  fetchData();
-  comType();
-}, [])
+// setComTypeList(data_option3);
+// useEffect(() => {
+//   fetchData();
+//   comType();
+// }, [])
 
 
 
@@ -102,6 +105,24 @@ useEffect(() => {
   // console.log(decodeJwt.uname);
   let Authorization = 'Bearer'+' '+token;
  
+
+  const SystemLIstData = async() => {
+
+
+    
+    await fetch(process.env.REACT_APP_SYSTEM_LIST_R02,{method:'GET',headers:{ Authorization:Authorization}}).then(optionData =>optionData.json().then(data=>({data: data,
+          status: optionData.status})).then(res =>{
+          console.log(res.data.data.systemlist);
+          setArrData(res.data.data.systemlist)
+            return res;
+          }));
+  }
+
+  useEffect(() => {
+    SystemLIstData();
+    comType();
+
+}, [])
  // let url = `http://192.168.33.81:9877/DmscReportGateway/api/v1/report02/systemlist`;
 
 
@@ -114,39 +135,39 @@ useEffect(() => {
   // console.log(data);
  
   // console.log(token);
- 
 
 
-
-
-  // let url ='http://192.168.33.54:9877/DmscReportGateway/api/v1/report/01';
-  // let url = 'http://192.168.33.81:9877/DmscReportGateway/api/v1/report02/data';
-  
-  // let url = 'http://localhost:3005/reportData';
-
-  const response =  await fetch(process.env.REACT_APP_URL_REPORT_TREE,{
-    method:'POST', 
-    mode: 'cors',
-    body: JSON.stringify(data),
-    headers:{ 
+  const response = await axios({
+    method: 'get',
+    url: process.env.REACT_APP_URL_REPORT_TREE,
+      headers:{ 
       'content-type': 'application/json;UTF-8',
       'Authorization':Authorization
+    },
+    params: {
+      usertype,
+      comtype,
+      year
     }
-  }).then(response =>response.json().then(data=>({data: data,
-        status: response.status})).then(res =>{
-          
-          data_res = res.data;
-          // console.log(data_res);
-          if(data_res.status){
+  });
 
-            setChartData({labels,datasets:data_res.datasets})
-          }else{
-            setChartData({labels,datasets:[]})
-          }
-          
-      
-         
-        }));
+  console.log(response);
+  if(response.data.data.status === true){
+    setChartData({labels,datasets:response.data.data.datasets})
+  }
+  else{
+    console.log("NOT FOUND")
+    Swal.fire({
+      title: 'ไม่พบข้อมูล!',
+      icon: 'error',
+      confirmButtonText: 'ตกลง'
+    })
+    let label = []
+    
+    setChartData({label,datasets:[]});    
+   
+  }
+
      
       
 }
@@ -157,12 +178,35 @@ const SerachDataTwo =  async() => {
   let data_res
 
  data = {id,year};
-  
-  // console.log(data);
- 
-  // console.log(token);
- 
+console.log(data);
+  const response = await axios({
+    method: 'get',
+    url: process.env.REACT_APP_URL_REPORT_TWO,
+      headers:{ 
+      'content-type': 'application/json;UTF-8',
+      'Authorization':Authorization
+    },
+    params: {
+      id,
+      year
+    }
+  });
 
+  console.log(response);
+  if(response.data.data.status){
+    setChartData({labels,datasets:response.data.data.datasets})
+  }
+  else{
+    console.log("NOT FOUND")
+    Swal.fire({
+      title: 'ไม่พบข้อมูล!',
+      icon: 'error',
+      confirmButtonText: 'ตกลง'
+    })
+    let label = []
+    
+    setChartData({label,datasets:[]});  
+  }
 
 
 
@@ -171,29 +215,29 @@ const SerachDataTwo =  async() => {
   // // let url = 'http://localhost:3005/reporttree'
   // let url = 'http://localhost:3005/reportData';
 
-  const response =  await fetch(process.env.REACT_APP_URL_REPORT_TWO,{
-    method:'POST', 
-    mode: 'cors',
-    body: JSON.stringify(data),
-    headers:{ 
-      'content-type': 'application/json;UTF-8',
-      'Authorization':Authorization
-    }
-  }).then(response =>response.json().then(data=>({data: data,
-        status: response.status})).then(res =>{
+  // const response =  await fetch(process.env.REACT_APP_URL_REPORT_TWO,{
+  //   method:'POST', 
+  //   mode: 'cors',
+  //   body: JSON.stringify(data),
+  //   headers:{ 
+  //     'content-type': 'application/json;UTF-8',
+  //     'Authorization':Authorization
+  //   }
+  // }).then(response =>response.json().then(data=>({data: data,
+  //       status: response.status})).then(res =>{
           
-          data_res = res.data;
-          // console.log(data_res);
-          if(data_res.status){
+  //         data_res = res.data;
+  //         // console.log(data_res);
+  //         if(data_res.status){
 
-            setChartData({labels,datasets:data_res.datasets})
-          }else{
-            setChartData({labels,datasets:[]})
-          }
+  //           setChartData({labels,datasets:data_res.datasets})
+  //         }else{
+  //           setChartData({labels,datasets:[]})
+  //         }
           
       
          
-        }));
+  //       }));
      
       
 }
@@ -202,7 +246,7 @@ const SerachDataone = async() =>{
   let data_res
 
   let data = {type,state,year};
-  
+  console.log(data);
 
   let token = localStorage.getItem("accessToken");
 
@@ -211,32 +255,61 @@ const SerachDataone = async() =>{
   // let url ='http://192.168.33.54:9877/DmscReportGateway/api/v1/report/01';
   // let url = 'http://192.168.33.81:9877/DmscReportGateway/api/v1/report01/data';
    // let url = 'http://192.168.33.81:9877/DmscReportGateway/api/v1/report01/data';
-  let url = 'http://localhost:3005/getreportone';
+  // let url = 'http://localhost:3005/getreportone';
 
-  const response =  await fetch(process.env.REACT_APP_URL_REPORT_ONE,{
-    method:'POST', 
-    mode: 'cors',
-    body: JSON.stringify(data),
-    headers:{ 
-      'content-type': 'application/json;UTF-8',
-      'Authorization':Authorization
-    }
-  }).then(response =>response.json().then(data=>({data: data,
-        status: response.status})).then(res =>{
-          // console.log(res);
-          data_res = res.data;
-          // console.log(data_res);
-          if(data_res.status){
+  // const response =  await fetch(process.env.REACT_APP_URL_REPORT_ONE,{
+  //   method:'GET', 
+  //   mode: 'cors',
+  //   body: JSON.stringify(data),
+  //   headers:{ 
+  //     'content-type': 'application/json;UTF-8',
+  //     'Authorization':Authorization
+  //   }
+  // }).then(response =>response.json().then(data=>({data: data,
+  //       status: response.status})).then(res =>{
+  //         // console.log(res);
+  //         data_res = res.data.data;
+  //         // console.log(data_res);
+  //         if(data_res.status){
 
-            setChartData({labels,datasets:data_res.datasets})
-          }else{
-            setChartData({labels,datasets:[]})
-          }
+  //           setChartData({labels,datasets:data_res.datasets})
+  //         }else{
+  //           setChartData({labels,datasets:[]})
+  //         }
           
       
          
-        }));
+  //       }));
 
+  const response = await axios({
+    method: 'get',
+    url: process.env.REACT_APP_URL_REPORT_ONE,
+      headers:{ 
+      'content-type': 'application/json;UTF-8',
+      'Authorization':Authorization
+    },
+    params: {
+      type,
+      state,
+      year
+    }
+  });
+
+  console.log(response);
+  if(response.data.data.status){
+    setChartData({labels,datasets:response.data.data.datasets})
+  }
+  else{
+    console.log("NOT FOUND")
+    Swal.fire({
+      title: 'ไม่พบข้อมูล!',
+      icon: 'error',
+      confirmButtonText: 'ตกลง'
+    })
+ let label = []
+    
+    setChartData({label,datasets:[]});  
+  }
 
 }
 
@@ -380,15 +453,15 @@ lab_profile
 &nbsp;&nbsp;&nbsp; <NavDropdown   title="รายงาน" id="basic-nav-dropdown" style={{'margin-right':20}}>
             
               <NavDropdown.Item>
-              <p onClick={GetReporone} >หนังสือรับรองการแจ้ง/ใบอนุญาต</p>
+              <a onClick={GetReporone} >หนังสือรับรองการแจ้ง/ใบอนุญาต</a>
           
               </NavDropdown.Item>
               <NavDropdown.Item>
-              <p onClick={GetReportwo}>บัญชีผู้ใช้งานระบบบูรณาการ</p>
+              <a onClick={GetReportwo}>บัญชีผู้ใช้งานระบบบูรณาการ</a>
               </NavDropdown.Item>
               {/* <NavDropdown.Divider /> */}
               <NavDropdown.Item>
-             <p onClick={GetReporoneTree}>บัญชีผู้ใช้งานระบบสนับสนุน</p>  
+             <a onClick={GetReporoneTree}>บัญชีผู้ใช้งานระบบสนับสนุน</a>  
               </NavDropdown.Item>
               
             </NavDropdown>
@@ -627,7 +700,7 @@ lab_profile
   <div className="card container">
     <div className="row" id="chartID" style={{height:450}}>
 
-    <LineChart options={options} ChartData={ChartData}/>
+    <LineChart  options={options} ChartData={ChartData}/>
     </div>
    
       </div>

@@ -5,7 +5,7 @@ const axios = require('axios');
 const  bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 app.use(cors());
-app.use(bodyParser());
+// app.use(bodyParser());
 dotenv.config();
 
 
@@ -20,7 +20,7 @@ app.get('/',(req,res)=>{
 })
 
 
-app.get('/report02/systemlist',async(req,res) =>{
+app.get(process.env.EXPRESS_APP_SYSTEM_LIST,async(req,res) =>{
 try{
 const aut = req.headers.authorization;
  // console.debug(process.env.REACT_APP_SYSTEM_LIST_R02)
@@ -36,7 +36,7 @@ return res.send({"data":getSystemList.data});
 });
 
 
-app.get('/report03/ComTypeList',async(req,res) =>{
+app.get(process.env.EXPRESS_APP_COMTYPE_LIST,async(req,res) =>{
     try{
         const aut = req.headers.authorization;
           
@@ -51,15 +51,18 @@ app.get('/report03/ComTypeList',async(req,res) =>{
     
     });
 
-app.get('/DmscReportGateway/api/v1/chart/report/01',async(req,res) =>{
+app.get(process.env.EXPRESS_APP_REPORT_01,async(req,res) =>{
 
     try{
+      // console.log(req); 
         const aut = req.headers.authorization;
-          const body = req.body;
-          console.log(body)
-           const report01 = await axios.get(process.env.REACT_APP_URL_REPORT_ONE,{body:body, headers: {
-            'authorization': aut,
+          const body = {'type': parseInt(req.query.type),'state':parseInt(req.query.state),'year':req.query.year};
 
+
+          console.log(body)
+           const report01 = await axios.get(process.env.REACT_APP_URL_REPORT_ONE,{data:body, headers: {
+            'Authorization': aut,
+            'Content-Type':'application/json;UTF-8'
           }})
          
         return res.send({"data":report01.data});
@@ -70,14 +73,15 @@ app.get('/DmscReportGateway/api/v1/chart/report/01',async(req,res) =>{
 })
 
 
-app.get('/DmscReportGateway/api/v1/chart/report/02',async(req,res) =>{
+app.get(process.env.EXPRESS_APP_REPORT_01,async(req,res) =>{
 
     try{
         const aut = req.headers.authorization;
-        const body = req.body;
+        const body = {'id': parseInt(req.query.id),'year':req.query.year};
         console.log(body)
-           const report02 = await axios.get(process.env.REACT_APP_URL_REPORT_TWO,{ body:body, headers: {
-            'authorization': aut
+           const report02 = await axios.get(process.env.REACT_APP_URL_REPORT_TWO,{data:body, headers: {
+            'authorization': aut,
+            'Content-Type':'application/json;UTF-8'
           }})
          
         return res.send({"data":report02.data});
@@ -87,19 +91,18 @@ app.get('/DmscReportGateway/api/v1/chart/report/02',async(req,res) =>{
         }
 })
 
-app.get('/DmscReportGateway/api/v1/chart/report/03',async(req,res) =>{
+app.get(process.env.EXPRESS_APP_REPORT_03,async(req,res) =>{
 
     try{
         const aut = req.headers.authorization;
-        const body = req.body;
+        const body = {'usertype': parseInt(req.query.usertype),'comtype':req.query.comtype,'year':req.query.year};
         console.log(body)
-           const report02 = await axios.get(process.env.REACT_APP_URL_REPORT_TREE,{body:body,headers:{
+           const report03 = await axios.get(process.env.REACT_APP_URL_REPORT_TREE,{data:body,headers:{
             'authorization': aut
           }})
          
-        return res.send({"data":report02.data.datasets});
+        return res.send({"data":report03.data});
         }catch(e){
-            console.log(e)
-            return({error:e.stack,error:e});
+            return res.send({"data":{status:false}});
         }
 })
