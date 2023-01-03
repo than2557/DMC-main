@@ -1,7 +1,7 @@
 
 import './chart.css';
 // import './nightmode.css';
-import React,{useState,useEffect,} from'react';
+import React,{useState,useEffect,useRef} from'react';
 import {Button,Container,Navbar,Nav,InputGroup,Form,NavDropdown} from 'react-bootstrap';
 
 import LineChart from '../../component/LineChart';
@@ -10,15 +10,20 @@ import account from '../../img/account_circle_FILL0_wght400_GRAD0_opsz48.svg';
 import  lightbulb from '../../img/lightbulb_FILL0_wght400_GRAD0_opsz48.svg';
 import monitoring from '../../img/monitoring_FILL0_wght400_GRAD0_opsz48.svg';
 import  logout from '../../img/logout_FILL0_wght400_GRAD0_opsz48.svg';
+import search from '../../img/search_FILL0_wght200_GRAD-25_opsz20.svg';
 import 'twin.macro';
 import jwt_decode  from "jwt-decode";
 import 'chart.js/auto'; 
-import { MDBFooter } from 'mdb-react-ui-kit';
+import { MDBFooter,MDBBtn,MDBBtnGroup, MDBIcon } from 'mdb-react-ui-kit';
 import MovingText from 'react-moving-text'
 import axios from 'axios';
 import Swal from 'sweetalert2'
+
 function ReportChart() {
   
+  const reportPDF = useRef(null);
+
+
   const options = {
     responsive: true,
     maintainAspectRatio:false
@@ -55,54 +60,17 @@ let LineData = {labels,datasets:[]};
 let data_option;
 
 let data_option3;
-
-// const fetchData = async() => {
-// //  let url ="http://localhost:9877/DmscReportGateway/api/v1/chart/report02/systemlist";
-//   await fetch(process.env.REACT_APP_SYSTEM_LIST_R02,{
-//     method:'GET', 
-//   }).then(optionData =>optionData.json().then(data=>({data: data,
-//     status: optionData.status})).then(res =>{
-//       data_option  = res.data.systemlist;
-//       setArrData(data_option)
-//       return data_option;
-//     }));
-// }
-
-
-
-
 const comType = async() =>{
- // let urlR = "http://localhost:9877/DmscReportGateway/api/v1/report03/comtypelist";
-//  let url = "http://localhost:9877/DmscReportGateway/api/v1/chart/report03/comtypelist";
-// console.log(process.env.REACT_APP_ComType_List_R03)
-  await fetch(process.env.REACT_APP_ComType_List_R03,{
-    method:'GET', 
-  }).then(optionData =>optionData.json().then(data=>({data: data})).then(res =>{
-      data_option3  = res.data.data.comtypelist;
-     console.log(data_option3)
-     setComTypeList(data_option3)
-      return data_option3;
-    }));
-  
+    await fetch(process.env.REACT_APP_ComType_List_R03,{method:'GET',headers:{ Authorization:Authorization}}).then(optionData =>optionData.json().then(data=>({data: data,
+      status: optionData.status})).then(res =>{
+        data_option3  = res.data.data.comtypelist;
+        setComTypeList(data_option3)
+         return data_option3;
+      }));
 }
-
-// setComTypeList(data_option3);
-// useEffect(() => {
-//   fetchData();
-//   comType();
-// }, [])
-
-
-
-
-
-
-
-  
-  
+    
   let token = localStorage.getItem("accessToken");
   let decodeJwt = jwt_decode(token);
-  // console.log(decodeJwt.uname);
   let Authorization = 'Bearer'+' '+token;
  
 
@@ -112,7 +80,6 @@ const comType = async() =>{
     
     await fetch(process.env.REACT_APP_SYSTEM_LIST_R02,{method:'GET',headers:{ Authorization:Authorization}}).then(optionData =>optionData.json().then(data=>({data: data,
           status: optionData.status})).then(res =>{
-          console.log(res.data.data.systemlist);
           setArrData(res.data.data.systemlist)
             return res;
           }));
@@ -123,7 +90,6 @@ const comType = async() =>{
     comType();
 
 }, [])
- // let url = `http://192.168.33.81:9877/DmscReportGateway/api/v1/report02/systemlist`;
 
 
  const SerachDataTree =  async() => {
@@ -151,7 +117,7 @@ const comType = async() =>{
     }
   });
 
-  console.log(response);
+  // console.log(response);
   if(response.data.data.status === true){
     setChartData({labels,datasets:response.data.data.datasets})
   }
@@ -178,7 +144,7 @@ const SerachDataTwo =  async() => {
   let data_res
 
  data = {id,year};
-console.log(data);
+// console.log(data);
   const response = await axios({
     method: 'get',
     url: process.env.REACT_APP_URL_REPORT_TWO,
@@ -192,7 +158,7 @@ console.log(data);
     }
   });
 
-  console.log(response);
+  // console.log(response);
   if(response.data.data.status){
     setChartData({labels,datasets:response.data.data.datasets})
   }
@@ -209,35 +175,6 @@ console.log(data);
   }
 
 
-
-  // let url ='http://192.168.33.54:9877/DmscReportGateway/api/v1/report/01';
-  // let url = 'http://192.168.33.81:9877/DmscReportGateway/api/v1/report02/data';
-  // // let url = 'http://localhost:3005/reporttree'
-  // let url = 'http://localhost:3005/reportData';
-
-  // const response =  await fetch(process.env.REACT_APP_URL_REPORT_TWO,{
-  //   method:'POST', 
-  //   mode: 'cors',
-  //   body: JSON.stringify(data),
-  //   headers:{ 
-  //     'content-type': 'application/json;UTF-8',
-  //     'Authorization':Authorization
-  //   }
-  // }).then(response =>response.json().then(data=>({data: data,
-  //       status: response.status})).then(res =>{
-          
-  //         data_res = res.data;
-  //         // console.log(data_res);
-  //         if(data_res.status){
-
-  //           setChartData({labels,datasets:data_res.datasets})
-  //         }else{
-  //           setChartData({labels,datasets:[]})
-  //         }
-          
-      
-         
-  //       }));
      
       
 }
@@ -246,40 +183,11 @@ const SerachDataone = async() =>{
   let data_res
 
   let data = {type,state,year};
-  console.log(data);
+  // console.log(data);
 
   let token = localStorage.getItem("accessToken");
 
   let Authorization = 'Bearer'+' '+token;
-
-  // let url ='http://192.168.33.54:9877/DmscReportGateway/api/v1/report/01';
-  // let url = 'http://192.168.33.81:9877/DmscReportGateway/api/v1/report01/data';
-   // let url = 'http://192.168.33.81:9877/DmscReportGateway/api/v1/report01/data';
-  // let url = 'http://localhost:3005/getreportone';
-
-  // const response =  await fetch(process.env.REACT_APP_URL_REPORT_ONE,{
-  //   method:'GET', 
-  //   mode: 'cors',
-  //   body: JSON.stringify(data),
-  //   headers:{ 
-  //     'content-type': 'application/json;UTF-8',
-  //     'Authorization':Authorization
-  //   }
-  // }).then(response =>response.json().then(data=>({data: data,
-  //       status: response.status})).then(res =>{
-  //         // console.log(res);
-  //         data_res = res.data.data;
-  //         // console.log(data_res);
-  //         if(data_res.status){
-
-  //           setChartData({labels,datasets:data_res.datasets})
-  //         }else{
-  //           setChartData({labels,datasets:[]})
-  //         }
-          
-      
-         
-  //       }));
 
   const response = await axios({
     method: 'get',
@@ -295,7 +203,7 @@ const SerachDataone = async() =>{
     }
   });
 
-  console.log(response);
+  // console.log(response);
   if(response.data.data.status){
     setChartData({labels,datasets:response.data.data.datasets})
   }
@@ -347,6 +255,14 @@ const getExcelData = ()=>{
   document.getElementById('Excel1').style.display = 'block';
   setChartData({labels,datasets:[]});
 }
+
+const handleGeneratePdf = async()=>{
+
+};
+
+const handleGenerateExcell = async()=>{
+
+};
 
 
 // const optionsExcelAntigen = selectExcel(Authorization);
@@ -529,7 +445,7 @@ lab_profile
   </div> */}
 
 {/* excel data end*/}
-    <div className="card col-md-8 center" id="report3" style={{"display":"none","width":1000,"height":100}}>
+    <div className="card col-md-8 center" id="report3" style={{"display":"none","width":1300,"height":100}}>
       <input id="inputreport3" value="report3"  hidden/>
   <div className="container">
   <p style={{"margin-top":-25}}> รายงานบัญชีผู้ใช้งานระบบสนับสนุนพระราชบัญญัติเชื้อโรคและพิษจากสัตว์ออนไลน์ </p>
@@ -582,17 +498,25 @@ lab_profile
       </InputGroup>
     </div>
     <div className="col">
-      <Button onClick={SerachDataTree}>ค้นหาข้อมูล</Button>
-    </div>
+      
+      <MDBBtnGroup aria-label='Basic example'>
+      <MDBBtn  onClick={SerachDataone} style={{backgroundColor:'#4896f0'}}>ค้นหาข้อมูล</MDBBtn>  
+      <MDBBtn  style={{ backgroundColor: '#f23f3f' }}>
+         PDF
+        </MDBBtn>
+      <MDBBtn  onClick={handleGenerateExcell} color='success'>Excell</MDBBtn>
+       
+      </MDBBtnGroup>
+      </div>
     
   </div>
 </div>
   </div>
     {/* end of form tree */}
-    <div className="card col-md-8 center" id="report2" style={{"display":"none","width":1000,"height":100}}>
+    <div className="card col-md-8 center" id="report2" style={{"display":"none","width":1300,"height":100}}>
       <input id="inputreport2" value="report2"  hidden/>
   <div className="container">
-  <p style={{"margin-top":-25}}>  รายงานบัญชีผู้ใช้งานระบบบูรณาการข้อมูลประชาขนและการบริการภาครัฐ</p>
+  <p style={{"margin-top":-25}}>  รายงานบัญชีผู้ใช้งานระบบบูรณาการข้อมูลประชาชนและการบริการภาครัฐ</p>
   <div className="row">
     <div className="col">
 
@@ -633,15 +557,22 @@ lab_profile
       </InputGroup>
     </div>
     <div className="col">
-    
-      <Button onClick={SerachDataTwo}>ค้นหาข้อมูล</Button>
-    </div>
+      
+      <MDBBtnGroup aria-label='Basic example'>
+      <MDBBtn  onClick={SerachDataone} style={{backgroundColor:'#4896f0'}}>ค้นหาข้อมูล</MDBBtn>  
+      <MDBBtn  style={{ backgroundColor: '#f23f3f' }}>
+         PDF
+        </MDBBtn>
+      <MDBBtn  onClick={handleGenerateExcell} color='success'>Excell</MDBBtn>
+       
+      </MDBBtnGroup>
+      </div>
   </div>
 </div>
   </div>
 {/* <div>end form report 2</div> */}
 
-  <div className="card col-md-8 center" id="report1" style={{"display":"block","width":1000,"height":100}}>
+  <div className="card col-md-8 center" id="report1" style={{"display":"block","width":1300,"height":100}}>
   <input id="inputreport1" value="report1"  hidden/>
   <div className="container">
 <p style={{"margin-top":-25}}>  รายงานผลการดำเนินการเกี่ยวกับหนังสือรับรองการแจ้ง/ใบอนุญาต</p>
@@ -651,7 +582,7 @@ lab_profile
       <InputGroup className="mb-2">
         <InputGroup.Text id="basic-addon1"  style={{height:40}}>ประเภท</InputGroup.Text>
         <Form.Select aria-label="Default select example" id="type" name="type" onChange={e=>setType(parseInt(e.target.value))}>
-        <option value="0" selected="">เลือกประเภท</option>
+        <option value="0" selected="">--เลือกประเภท--</option>
       <option value="1">ใบอนุญาต</option>
       <option value="2">หนังสือรับรอง</option>
     </Form.Select>
@@ -662,6 +593,7 @@ lab_profile
       <InputGroup className="mb-4">
       <InputGroup.Text id="basic-addon1"  style={{height:40}}>สถานะ</InputGroup.Text>
       <Form.Select aria-label="Default select example" id="state" name="state" onChange={e=>setState(parseInt(e.target.value))}>
+      <option value="null">--เลือกสถานะ--</option>
       <option value="0" selected="">รอยืนเอกสาร</option>
       <option value="1">ยื่นคำขอ</option>
       <option value="2">หลักฐานในการยื่นไม่ครบถ้วน</option>
@@ -690,17 +622,27 @@ lab_profile
       </InputGroup>
     </div>
     <div className="col">
- 
-      <Button onClick={SerachDataone}>ค้นหาข้อมูล</Button>
+      
+    <MDBBtnGroup aria-label='Basic example'>
+    <MDBBtn  onClick={SerachDataone} style={{backgroundColor:'#4896f0'}}>ค้นหาข้อมูล</MDBBtn>  
+    <MDBBtn  style={{ backgroundColor: '#f23f3f' }}>
+       PDF
+      </MDBBtn>
+    <MDBBtn  onClick={handleGenerateExcell} color='success'>Excell</MDBBtn>
+     
+    </MDBBtnGroup>
     </div>
+ 
+  
+    
   </div>
 </div>
   </div>
   <br/>
   <div className="card container">
-    <div className="row" id="chartID" style={{height:450}}>
+    <div className="row"  id="chartID" style={{height:450}} ref={reportPDF}>
 
-    <LineChart  options={options} ChartData={ChartData}/>
+    <LineChart  options={options} ChartData={ChartData} />
     </div>
    
       </div>

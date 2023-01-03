@@ -37,19 +37,23 @@ return res.send({"data":getSystemList.data});
 
 
 app.get(process.env.EXPRESS_APP_COMTYPE_LIST,async(req,res) =>{
-    try{
-        const aut = req.headers.authorization;
-          
-           const ComTypeList = await axios.get(process.env.REACT_APP_COMTYPE_LIST_R03,{  headers: {
-            'authorization': aut
-          }})
-        return res.send({"data":ComTypeList.data});
-        }catch(e){
-            console.log(e)
-            return({error:e.stack,error:e});
-        }
+  try{
+    console.log(req); 
+      const aut = req.headers.authorization;
+         const getComtypeList = await axios.get(process.env.REACT_APP_COMTYPE_LIST_R03,{headers: {
+          'Authorization': aut,
+        }})
+       
+      return res.send({"data":getComtypeList.data});
+      }catch(e){
+          console.log(e)
+          return({error:e.stack,error:e});
+      }
     
     });
+
+
+
 
 app.get(process.env.EXPRESS_APP_REPORT_01,async(req,res) =>{
 
@@ -57,8 +61,6 @@ app.get(process.env.EXPRESS_APP_REPORT_01,async(req,res) =>{
       // console.log(req); 
         const aut = req.headers.authorization;
           const body = {'type': parseInt(req.query.type),'state':parseInt(req.query.state),'year':req.query.year};
-
-
           console.log(body)
            const report01 = await axios.get(process.env.REACT_APP_URL_REPORT_ONE,{data:body, headers: {
             'Authorization': aut,
@@ -73,7 +75,7 @@ app.get(process.env.EXPRESS_APP_REPORT_01,async(req,res) =>{
 })
 
 
-app.get(process.env.EXPRESS_APP_REPORT_01,async(req,res) =>{
+app.get(process.env.EXPRESS_APP_REPORT_02,async(req,res) =>{
 
     try{
         const aut = req.headers.authorization;

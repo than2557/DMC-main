@@ -63,6 +63,9 @@ const [password, setPassword] = useState();
     <br/>
   </div>
 </div>
+<form onSubmit={Login}>
+
+
 
   <div class="form-group">
     <div className="inputsize justify-content-center">
@@ -95,8 +98,8 @@ const [password, setPassword] = useState();
 
       </div>
   </div>
-  <button type="submit" class="btn btn-primary" onClick={Login}>Submit</button>
-
+  <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
 </div>
       </div>
     </div>

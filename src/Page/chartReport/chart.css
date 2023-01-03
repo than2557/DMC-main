@@ -4,7 +4,7 @@ html {
   --gradLight: hsl(130, 64%, 74%);
   background: linear-gradient(to bottom, var(--gradDark), var(--gradLight));
 }
- 
+
 .App {
     text-align: center;
   }
