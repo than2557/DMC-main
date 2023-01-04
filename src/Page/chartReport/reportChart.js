@@ -17,11 +17,23 @@ import 'chart.js/auto';
 import { MDBFooter,MDBBtn,MDBBtnGroup, MDBIcon } from 'mdb-react-ui-kit';
 import MovingText from 'react-moving-text'
 import axios from 'axios';
-import Swal from 'sweetalert2'
-
+import Swal from 'sweetalert2';
+import fileDownload from 'react-file-download';
+import blob from 'blob';
 function ReportChart() {
   
+  let token = localStorage.getItem("accessToken");
+  let decodeJwt = jwt_decode(token);
+  let Authorization = 'Bearer'+' '+token;
+ 
+   if(decodeJwt.exp < new Date()){
+    new Swal("Failed","Token error");
+    console.log("Error Token");
+    localStorage.removeItem("accessToken");
+    window.location.href = "/login";
+  }
   const reportPDF = useRef(null);
+
 
 
   const options = {
@@ -69,10 +81,7 @@ const comType = async() =>{
       }));
 }
     
-  let token = localStorage.getItem("accessToken");
-  let decodeJwt = jwt_decode(token);
-  let Authorization = 'Bearer'+' '+token;
- 
+
 
   const SystemLIstData = async() => {
 
@@ -139,6 +148,39 @@ const comType = async() =>{
 }
 
 
+const Dowloadfile = async(data) => {
+
+let typeDowload = {'typedata':data};
+console.log(typeDowload);
+const response = await axios({
+  method: 'get',
+  url: process.env.REACT_APP_URL_DOWLOAD_EXCELL_PDF,
+    headers:{ 
+    'content-type': 'application/json;UTF-8',
+    'Authorization':Authorization
+  },
+  responseType:'blob',
+  params: {
+    typeDowload,type,state,year
+  }
+  
+})
+// console.log(response.data);
+
+
+const link = document.createElement("a");
+
+console.log(response)
+link.href = URL.createObjectURL(response.data);
+
+link.download = "DmscDataREport.xlsx";
+
+document.body.appendChild(link);
+
+link.click();
+
+document.body.removeChild(link);
+}
 const SerachDataTwo =  async() => {
   
   let data_res
@@ -265,7 +307,7 @@ const handleGenerateExcell = async()=>{
 };
 
 
-// const optionsExcelAntigen = selectExcel(Authorization);
+
 
 
 function checkpermission(event){
@@ -500,7 +542,7 @@ lab_profile
     <div className="col">
       
       <MDBBtnGroup aria-label='Basic example'>
-      <MDBBtn  onClick={SerachDataone} style={{backgroundColor:'#4896f0'}}>ค้นหาข้อมูล</MDBBtn>  
+      <MDBBtn  onClick={SerachDataTree} style={{backgroundColor:'#4896f0'}}>ค้นหาข้อมูล</MDBBtn>  
       <MDBBtn  style={{ backgroundColor: '#f23f3f' }}>
          PDF
         </MDBBtn>
@@ -559,7 +601,7 @@ lab_profile
     <div className="col">
       
       <MDBBtnGroup aria-label='Basic example'>
-      <MDBBtn  onClick={SerachDataone} style={{backgroundColor:'#4896f0'}}>ค้นหาข้อมูล</MDBBtn>  
+      <MDBBtn  onClick={SerachDataTwo} style={{backgroundColor:'#4896f0'}}>ค้นหาข้อมูล</MDBBtn>  
       <MDBBtn  style={{ backgroundColor: '#f23f3f' }}>
          PDF
         </MDBBtn>
@@ -625,10 +667,10 @@ lab_profile
       
     <MDBBtnGroup aria-label='Basic example'>
     <MDBBtn  onClick={SerachDataone} style={{backgroundColor:'#4896f0'}}>ค้นหาข้อมูล</MDBBtn>  
-    <MDBBtn  style={{ backgroundColor: '#f23f3f' }}>
+    <MDBBtn onClick={()=>Dowloadfile('pdf')} style={{ backgroundColor: '#f23f3f' }}>
        PDF
       </MDBBtn>
-    <MDBBtn  onClick={handleGenerateExcell} color='success'>Excell</MDBBtn>
+    <MDBBtn  onClick={()=>Dowloadfile('excell')} color='success'>Excell</MDBBtn>
      
     </MDBBtnGroup>
     </div>

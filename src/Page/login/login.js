@@ -1,9 +1,11 @@
 import React,{useState,SyntheticEvent} from'react';
 import {Form,InputGroup,form} from 'react-bootstrap';
 import logo from '../../img/icon.png';
+import jwt_decode  from "jwt-decode";
 
 import swal from 'sweetalert2';
 import './login.css';
+import jwtDecode from 'jwt-decode';
 
 
 
@@ -30,16 +32,28 @@ const [password, setPassword] = useState();
  console.log("status"+datares.status);
 
  if(datares.status){   
-    localStorage.setItem('accessToken',datares.token);
-  
-    window.location.href = "/chartReport";
-    console.log("token"+':'+datares.token);   
 
+let JWtTokenDecode = jwt_decode(datares.token);
+console.log(JWtTokenDecode);
+    localStorage.setItem('accessToken',datares.token);
+  let dateToken = new Date(JWtTokenDecode.exp);
+  // console.log(dateToken);
+  if(dateToken < new Date()){
+    new swal("Failed","Token error");
+    console.log("Error Token");
+  }
+  else{
+    window.location.href = "/chartReport";
+    // console.log("token"+':'+datares.token);  
+  }
+    
  }
  else{
     new swal("Failed", datares.message, "error");
   console.log("Error");
  }
+
+ 
 
   }
   return (

@@ -4,6 +4,7 @@ const cors = require('cors');
 const axios = require('axios');
 const  bodyParser = require('body-parser');
 const dotenv = require('dotenv');
+const fileDownload = require('js-file-download');
 app.use(cors());
 // app.use(bodyParser());
 dotenv.config();
@@ -108,3 +109,18 @@ app.get(process.env.EXPRESS_APP_REPORT_03,async(req,res) =>{
             return res.send({"data":{status:false}});
         }
 })
+
+app.get(process.env.EXPRESS_APP_REPORT_EXCELL_PDF_01,async(req,res)=>{
+  
+  try{
+
+ const aut = req.headers.authorization;
+ const body = {'type': parseInt(req.query.type),'state':parseInt(req.query.state),'year':req.query.year,'typeDowload':req.query.typeDowload};
+  console.log(body);
+  const respon = await axios.get(process.env.REACT_APP_URL_REPORT_01_FILE+'/'+body.typeDowload.typedata,{data:body,responseType: 'blob',headers:{'authorization':aut}})
+  
+  return res.send(respon.data);
+  }catch(e){
+    return res.send({"data":{status:false}});
+  }
+});
