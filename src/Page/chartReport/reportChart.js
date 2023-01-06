@@ -167,6 +167,15 @@ function s2ab(s) {
 
 const Dowloadfile = async(data) => {
 
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  let mm = today.getMonth() + 1; // Months start at 0!
+  let dd = today.getDate();
+  
+  if (dd < 10) dd = '0' + dd;
+  if (mm < 10) mm = '0' + mm;
+  
+  const formattedToday = dd + '-' + mm + '-' + yyyy;
 let typeDowload = {'typedata':data};
 console.log(typeDowload);
 let body = {type,state,year,typeDowload};
@@ -180,7 +189,48 @@ params: {typeDowload,type,state,year},
 if(response.data.status){
   var link = document.createElement('a');
   link.href = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + encodeURIComponent(response.data.data);
-  link.setAttribute('download', response.data.filename);
+  link.setAttribute('download',formattedToday+response.data.filename);
+
+  link.style.display = 'none';
+  document.body.appendChild(link);
+
+  link.click();
+
+  document.body.removeChild(link);
+}else{
+  throw new Error('DATA FOT FOUND');
+}
+ 
+}) .catch(error => {
+  console.log(error);
+});
+}
+
+const Dowloadfile02 = async (data) => {
+
+const today = new Date();
+  const yyyy = today.getFullYear();
+  let mm = today.getMonth() + 1; // Months start at 0!
+  let dd = today.getDate();
+  
+  if (dd < 10) dd = '0' + dd;
+  if (mm < 10) mm = '0' + mm;
+  
+  const formattedToday = dd + '-' + mm + '-' + yyyy;
+let typeDowload = {'typedata':data};
+console.log(typeDowload);
+let body = {typeDowload,id,year,systemname};
+// let url = `http://192.168.33.80:9877/DmscReportGateway/api/v1/chart/report01/data/${typeDowload.typedata}`;
+await axios(process.env.REACT_APP_URL_DOWLOAD_EXCELL_PDF02,{
+method: 'post', 
+headers: {'Content-Type': 'application/json', "Authorization":Authorization},
+params: body,
+}).then(response =>{
+  console.log(response.data);
+if(response.data.status){
+  var link = document.createElement('a');
+  link.href = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + encodeURIComponent(response.data.data);
+  link.setAttribute('download',formattedToday+response.data.filename);
 
   link.style.display = 'none';
   document.body.appendChild(link);
@@ -196,8 +246,8 @@ if(response.data.status){
   console.log(error);
 });
 
-
 }
+
 const SerachDataTwo =  async() => {
   
   let data_res
@@ -589,11 +639,12 @@ lab_profile
     <InputGroup className="mb-2">
         <InputGroup.Text id="basic-addon1" style={{height:40}}>ระบบงาน</InputGroup.Text>
         <Form.Select  onChange={e=>{
+          const select = e.target;
           setId(parseInt(e.target.value)) 
-          setSystemName(e.target.getAttribute("class"))
+          setSystemName(select.selectedOptions[0].text)
           }}>
         <option value="0" name="ระบบงาน" selected="">--ระบบงาน--</option>
-        {arrDataOption.map((d)=>(<option class={d.name} key={d.id} id={d.id} value={d.id} name={d.name}>{d.name}</option>))}
+        {arrDataOption.map((d)=>(<option class={d.name} key={d.id} id={d.name} value={d.id} name={d.name}>{d.name}</option>))}
 
     </Form.Select>
       </InputGroup>
@@ -625,10 +676,10 @@ lab_profile
       
       <MDBBtnGroup aria-label='Basic example'>
       <MDBBtn  onClick={SerachDataTwo} style={{backgroundColor:'#4896f0'}}>ค้นหาข้อมูล</MDBBtn>  
-      <MDBBtn  style={{ backgroundColor: '#f23f3f' }}>
-         PDF
-        </MDBBtn>
-      <MDBBtn  onClick={handleGenerateExcell} color='success'>Excell</MDBBtn>
+      <MDBBtn onClick={()=>Dowloadfile02('pdf')} style={{ backgroundColor: '#f23f3f' }}>
+       PDF
+      </MDBBtn>
+    <MDBBtn  onClick={()=>Dowloadfile02('excel')} color='success'>Excell</MDBBtn> 
        
       </MDBBtnGroup>
       </div>
@@ -725,10 +776,7 @@ lab_profile
         </a>
       </div>
     </MDBFooter>
-
     </div> 
-
-  
   );
 }
 

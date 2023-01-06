@@ -123,7 +123,7 @@ app.post(process.env.EXPRESS_APP_REPORT_EXCELL_PDF_01,async(req,res)=>{
   const respon = await axios.get(url,{data:body,responseType:'blob',headers:{
     'authorization': aut,
   }})
- console.log(respon.data);
+//  console.log(respon.data);
 
 
   return res.send(respon.data);
@@ -131,3 +131,26 @@ app.post(process.env.EXPRESS_APP_REPORT_EXCELL_PDF_01,async(req,res)=>{
     return res.send({"data":{status:false}});
   }
 });
+
+
+
+app.post(process.env.EXPRESS_APP_REPORT_EXCELL_PDF_02,async(req,res)=>{
+  
+  try{
+ const aut = req.headers.authorization;
+ const body = {'id': parseInt(req.query.id),'year':req.query.year,'systemname':req.query.systemname};
+  console.log(body);
+  // const fake = {"image":"jp1"};  
+  let url = process.env.REACT_APP_URL_REPORT_02_FILE+"/"+req.query.typeDowload.typedata;
+  // let url2 ="http://192.168.33.80:9877/DmscReportGateway/api/v1/excel/download";
+  const respon = await axios.get(url,{data:body,responseType:'blob',headers:{
+    'authorization': aut,
+  }})
+  return res.send(respon.data);
+  }catch(e){
+    return res.send({"data":{status:false}});
+  }
+});
+
+
+
