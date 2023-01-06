@@ -20,6 +20,7 @@
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "file-saver": "^2.0.5",
+    "fs": "^0.0.1-security",
     "generate-pdf-from-react-html": "^1.0.5",
     "html-to-image": "^1.11.4",
     "install": "^0.13.0",
@@ -42,7 +43,8 @@
     "sweetalert2": "^11.6.15",
     "twin.macro": "^3.1.0",
     "web-vitals": "^2.1.4",
-    "xhr": "^2.6.0"
+    "xhr": "^2.6.0",
+    "xlsx": "^0.18.5"
   },
   "scripts": {
     "start": "react-scripts start --ignore client to",

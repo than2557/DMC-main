@@ -18,20 +18,28 @@ import { MDBFooter,MDBBtn,MDBBtnGroup, MDBIcon } from 'mdb-react-ui-kit';
 import MovingText from 'react-moving-text'
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import fileDownload from 'react-file-download';
-import blob from 'blob';
+import FileDownload from 'react-file-download';
+import blob  from 'blob';
+import * as XLSX from 'xlsx/xlsx.mjs';
+
+
+
 function ReportChart() {
   
+
   let token = localStorage.getItem("accessToken");
   let decodeJwt = jwt_decode(token);
   let Authorization = 'Bearer'+' '+token;
  
-   if(decodeJwt.exp < new Date()){
+const checkAccessToken = async()=>{
+  console.log(decodeJwt.exp);
+  if(new Date(decodeJwt.exp) < new Date()){
     new Swal("Failed","Token error");
     console.log("Error Token");
     localStorage.removeItem("accessToken");
     window.location.href = "/login";
   }
+}
   const reportPDF = useRef(null);
 
 
@@ -68,6 +76,7 @@ let LineData = {labels,datasets:[]};
   const [id, setId] = useState();
   const [usertype,setUserType] = useState();  
   const [antigen,setantigen] = useState();
+  const [systemname,setSystemName] = useState();
   
 let data_option;
 
@@ -97,6 +106,7 @@ const comType = async() =>{
   useEffect(() => {
     SystemLIstData();
     comType();
+    checkAccessToken();
 
 }, [])
 
@@ -147,45 +157,54 @@ const comType = async() =>{
       
 }
 
+function s2ab(s) {
+  var buf = new ArrayBuffer(s.length);
+  var view = new Uint8Array(buf);
+  for (var i=0; i!=s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+  return buf;
+}
+
 
 const Dowloadfile = async(data) => {
 
 let typeDowload = {'typedata':data};
 console.log(typeDowload);
-const response = await axios({
-  method: 'get',
-  url: process.env.REACT_APP_URL_DOWLOAD_EXCELL_PDF,
-    headers:{ 
-    'content-type': 'application/json;UTF-8',
-    'Authorization':Authorization
-  },
-  responseType:'blob',
-  params: {
-    typeDowload,type,state,year
-  }
-  
-})
-// console.log(response.data);
+let body = {type,state,year,typeDowload};
+// let url = `http://192.168.33.80:9877/DmscReportGateway/api/v1/chart/report01/data/${typeDowload.typedata}`;
+await axios(process.env.REACT_APP_URL_DOWLOAD_EXCELL_PDF,{
+method: 'post', 
+headers: {'Content-Type': 'application/json', "Authorization":Authorization},
+params: {typeDowload,type,state,year},
+}).then(response =>{
+  console.log(response.data);
+if(response.data.status){
+  var link = document.createElement('a');
+  link.href = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + encodeURIComponent(response.data.data);
+  link.setAttribute('download', response.data.filename);
+
+  link.style.display = 'none';
+  document.body.appendChild(link);
+
+  link.click();
+
+  document.body.removeChild(link);
+}else{
+  throw new Error('DATA FOT FOUND');
+}
+ 
+}) .catch(error => {
+  console.log(error);
+});
 
 
-const link = document.createElement("a");
-
-console.log(response)
-link.href = URL.createObjectURL(response.data);
-
-link.download = "DmscDataREport.xlsx";
-
-document.body.appendChild(link);
-
-link.click();
-
-document.body.removeChild(link);
 }
 const SerachDataTwo =  async() => {
   
   let data_res
 
- data = {id,year};
+
+console.log(systemname);
+ data = {id,year,systemname};
 // console.log(data);
   const response = await axios({
     method: 'get',
@@ -196,7 +215,8 @@ const SerachDataTwo =  async() => {
     },
     params: {
       id,
-      year
+      year,
+      systemname
     }
   });
 
@@ -565,12 +585,15 @@ lab_profile
     
     </div>
     <div className="col">
-    
+
     <InputGroup className="mb-2">
         <InputGroup.Text id="basic-addon1" style={{height:40}}>ระบบงาน</InputGroup.Text>
-        <Form.Select aria-label="Default select example" id="id" name="id" onChange={e=>setId(parseInt(e.target.value))}>
-        <option value="0" selected="">--ระบบงาน--</option>
-        {arrDataOption.map((d)=>(<option key={d.id} id={d.id} value={d.id}>{d.name}</option>))}
+        <Form.Select  onChange={e=>{
+          setId(parseInt(e.target.value)) 
+          setSystemName(e.target.getAttribute("class"))
+          }}>
+        <option value="0" name="ระบบงาน" selected="">--ระบบงาน--</option>
+        {arrDataOption.map((d)=>(<option class={d.name} key={d.id} id={d.id} value={d.id} name={d.name}>{d.name}</option>))}
 
     </Form.Select>
       </InputGroup>
@@ -670,7 +693,7 @@ lab_profile
     <MDBBtn onClick={()=>Dowloadfile('pdf')} style={{ backgroundColor: '#f23f3f' }}>
        PDF
       </MDBBtn>
-    <MDBBtn  onClick={()=>Dowloadfile('excell')} color='success'>Excell</MDBBtn>
+    <MDBBtn  onClick={()=>Dowloadfile('excel')} color='success'>Excell</MDBBtn> 
      
     </MDBBtnGroup>
     </div>

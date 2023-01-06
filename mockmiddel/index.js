@@ -80,7 +80,7 @@ app.get(process.env.EXPRESS_APP_REPORT_02,async(req,res) =>{
 
     try{
         const aut = req.headers.authorization;
-        const body = {'id': parseInt(req.query.id),'year':req.query.year};
+        const body = {'id': parseInt(req.query.id),'year':req.query.year,'systemname':req.query.systemname};
         console.log(body)
            const report02 = await axios.get(process.env.REACT_APP_URL_REPORT_TWO,{data:body, headers: {
             'authorization': aut,
@@ -98,7 +98,7 @@ app.get(process.env.EXPRESS_APP_REPORT_03,async(req,res) =>{
 
     try{
         const aut = req.headers.authorization;
-        const body = {'usertype': parseInt(req.query.usertype),'comtype':req.query.comtype,'year':req.query.year};
+        const body = {"usertype": parseInt(req.query.usertype),"comtype":req.query.comtype,"year":req.query.year};
         console.log(body)
            const report03 = await axios.get(process.env.REACT_APP_URL_REPORT_TREE,{data:body,headers:{
             'authorization': aut
@@ -110,15 +110,22 @@ app.get(process.env.EXPRESS_APP_REPORT_03,async(req,res) =>{
         }
 })
 
-app.get(process.env.EXPRESS_APP_REPORT_EXCELL_PDF_01,async(req,res)=>{
+
+app.post(process.env.EXPRESS_APP_REPORT_EXCELL_PDF_01,async(req,res)=>{
   
   try{
-
  const aut = req.headers.authorization;
- const body = {'type': parseInt(req.query.type),'state':parseInt(req.query.state),'year':req.query.year,'typeDowload':req.query.typeDowload};
+ const body = {'type': parseInt(req.query.type),'state':parseInt(req.query.state),'year':req.query.year};
   console.log(body);
-  const respon = await axios.get(process.env.REACT_APP_URL_REPORT_01_FILE+'/'+body.typeDowload.typedata,{data:body,responseType: 'blob',headers:{'authorization':aut}})
-  
+  const fake = {"image":"jp1"};
+  let url = process.env.REACT_APP_URL_REPORT_01_FILE+"/"+req.query.typeDowload.typedata;
+  // let url2 ="http://192.168.33.80:9877/DmscReportGateway/api/v1/excel/download";
+  const respon = await axios.get(url,{data:body,responseType:'blob',headers:{
+    'authorization': aut,
+  }})
+ console.log(respon.data);
+
+
   return res.send(respon.data);
   }catch(e){
     return res.send({"data":{status:false}});
