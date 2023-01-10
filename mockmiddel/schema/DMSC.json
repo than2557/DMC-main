@@ -1,0 +1,22 @@
+{     
+"DmscReport":{
+  "type": "object",
+      "properties": {
+        "datasets": {
+            "type": "array",
+            "items": [{"type":"object","properties":{
+              "label":{"type":"string"}, 
+              "fill":{"type":"boolean"},
+              "backgroundColor":{"type":"string"},
+              "borderColor":{"type":"string"},
+              "borderWidth":{"type":"integer"},
+              "pointBorderColor":{"type":"string"},
+              "data":{"type":"array","items":[{"type":"integer"}]}
+            }}
+        ]
+          },
+          "status":{"type":"boolean"}
+      }
+}
+      
+  }

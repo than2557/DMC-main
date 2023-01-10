@@ -9,6 +9,7 @@ import logo from '../../img/icon.png';
 import account from '../../img/account_circle_FILL0_wght400_GRAD0_opsz48.svg';
 import  lightbulb from '../../img/lightbulb_FILL0_wght400_GRAD0_opsz48.svg';
 import monitoring from '../../img/monitoring_FILL0_wght400_GRAD0_opsz48.svg';
+import doccument from '../../img/description_FILL0_wght400_GRAD0_opsz48.svg';
 import  logout from '../../img/logout_FILL0_wght400_GRAD0_opsz48.svg';
 import search from '../../img/search_FILL0_wght200_GRAD-25_opsz20.svg';
 import 'twin.macro';
@@ -32,7 +33,6 @@ function ReportChart() {
   let Authorization = 'Bearer'+' '+token;
  
 const checkAccessToken = async()=>{
-  console.log(decodeJwt.exp);
   if(new Date(decodeJwt.exp) < new Date()){
     new Swal("Failed","Token error");
     console.log("Error Token");
@@ -94,8 +94,6 @@ const comType = async() =>{
 
   const SystemLIstData = async() => {
 
-
-    
     await fetch(process.env.REACT_APP_SYSTEM_LIST_R02,{method:'GET',headers:{ Authorization:Authorization}}).then(optionData =>optionData.json().then(data=>({data: data,
           status: optionData.status})).then(res =>{
           setArrData(res.data.data.systemlist)
@@ -111,58 +109,6 @@ const comType = async() =>{
 }, [])
 
 
- const SerachDataTree =  async() => {
-  
-  let data_res
-
- data = {usertype,comtype,year};
-  
-  // console.log(data);
- 
-  // console.log(token);
-
-
-  const response = await axios({
-    method: 'get',
-    url: process.env.REACT_APP_URL_REPORT_TREE,
-      headers:{ 
-      'content-type': 'application/json;UTF-8',
-      'Authorization':Authorization
-    },
-    params: {
-      usertype,
-      comtype,
-      year
-    }
-  });
-
-  // console.log(response);
-  if(response.data.data.status === true){
-    setChartData({labels,datasets:response.data.data.datasets})
-  }
-  else{
-    console.log("NOT FOUND")
-    Swal.fire({
-      title: 'ไม่พบข้อมูล!',
-      icon: 'error',
-      confirmButtonText: 'ตกลง'
-    })
-    let label = []
-    
-    setChartData({label,datasets:[]});    
-   
-  }
-
-     
-      
-}
-
-function s2ab(s) {
-  var buf = new ArrayBuffer(s.length);
-  var view = new Uint8Array(buf);
-  for (var i=0; i!=s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
-  return buf;
-}
 
 
 const Dowloadfile = async(data) => {
@@ -185,7 +131,7 @@ method: 'post',
 headers: {'Content-Type': 'application/json', "Authorization":Authorization},
 params: {typeDowload,type,state,year},
 }).then(response =>{
-  console.log(response.data);
+ 
 if(response.data.status){
   var link = document.createElement('a');
   link.href = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + encodeURIComponent(response.data.data);
@@ -218,7 +164,7 @@ const today = new Date();
   
   const formattedToday = dd + '-' + mm + '-' + yyyy;
 let typeDowload = {'typedata':data};
-console.log(typeDowload);
+
 let body = {typeDowload,id,year,systemname};
 // let url = `http://192.168.33.80:9877/DmscReportGateway/api/v1/chart/report01/data/${typeDowload.typedata}`;
 await axios(process.env.REACT_APP_URL_DOWLOAD_EXCELL_PDF02,{
@@ -226,7 +172,7 @@ method: 'post',
 headers: {'Content-Type': 'application/json', "Authorization":Authorization},
 params: body,
 }).then(response =>{
-  console.log(response.data);
+  // console.log(response.data);
 if(response.data.status){
   var link = document.createElement('a');
   link.href = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + encodeURIComponent(response.data.data);
@@ -248,89 +194,107 @@ if(response.data.status){
 
 }
 
-const SerachDataTwo =  async() => {
+const Dowloadfile03 = async(data) =>{
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  let mm = today.getMonth() + 1; // Months start at 0!
+  let dd = today.getDate();
   
-  let data_res
+  if (dd < 10) dd = '0' + dd;
+  if (mm < 10) mm = '0' + mm;
+  
+  const formattedToday = dd + '-' + mm + '-' + yyyy;
+let typeDowload = {'typedata':data};
 
+let body = {typeDowload,usertype,comtype,year};
+ 
 
-console.log(systemname);
- data = {id,year,systemname};
-// console.log(data);
-  const response = await axios({
-    method: 'get',
-    url: process.env.REACT_APP_URL_REPORT_TWO,
-      headers:{ 
-      'content-type': 'application/json;UTF-8',
-      'Authorization':Authorization
-    },
-    params: {
-      id,
-      year,
-      systemname
-    }
-  });
+await axios(process.env.REACT_APP_URL_DOWLOAD_EXCELL_PDF03,{
+method: 'post', 
+headers: {'Content-Type': 'application/json', "Authorization":Authorization},
+params: body,
+}).then(response =>{
+  // console.log(response.data);
+if(response.data.status){
+  var link = document.createElement('a');
+  link.href = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + encodeURIComponent(response.data.data);
+  link.setAttribute('download',formattedToday+response.data.filename);
+  link.style.display = 'none';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}else{
+  throw new Error('DATA FOT FOUND');
+}
+ 
+}) .catch(error => {
+  console.log(error);
+});
 
-  // console.log(response);
-  if(response.data.data.status){
-    setChartData({labels,datasets:response.data.data.datasets})
-  }
-  else{
+}
+
+const SerachDataTree =  async() => {
+ data = {usertype,comtype,year};
+ const getDataTree =  await getreportData(process.env.REACT_APP_URL_REPORT_TREE,data,Authorization);
+//  console.log(getDataTree);
+ if(getDataTree.status){
+
+  setChartData({labels,datasets:getDataTree.data.datasets})
+ }
+   else{
     console.log("NOT FOUND")
     Swal.fire({
       title: 'ไม่พบข้อมูล!',
       icon: 'error',
       confirmButtonText: 'ตกลง'
     })
-    let label = []
-    
-    setChartData({label,datasets:[]});  
+    let label = [] 
+    setChartData({label,datasets:[]});    
+  } 
+}
+
+const SerachDataTwo =  async() => {
+  
+
+  data = {id,year,systemname};
+  const getDataTwo =  await getreportData(process.env.REACT_APP_URL_REPORT_TWO,data,Authorization);
+  // console.log(getDataTwo);
+  if(getDataTwo.status){
+ 
+   setChartData({labels,datasets:getDataTwo.data.datasets})
   }
-
-
-     
-      
+    else{
+     console.log("NOT FOUND")
+     Swal.fire({
+       title: 'ไม่พบข้อมูล!',
+       icon: 'error',
+       confirmButtonText: 'ตกลง'
+     })
+     let label = [] 
+     setChartData({label,datasets:[]});    
+   }
 }
 
 const SerachDataone = async() =>{
-  let data_res
 
-  let data = {type,state,year};
-  // console.log(data);
-
-  let token = localStorage.getItem("accessToken");
-
-  let Authorization = 'Bearer'+' '+token;
-
-  const response = await axios({
-    method: 'get',
-    url: process.env.REACT_APP_URL_REPORT_ONE,
-      headers:{ 
-      'content-type': 'application/json;UTF-8',
-      'Authorization':Authorization
-    },
-    params: {
-      type,
-      state,
-      year
-    }
-  });
-
-  // console.log(response);
-  if(response.data.data.status){
-    setChartData({labels,datasets:response.data.data.datasets})
+  
+  data = {type,state,year};
+  const getDataOne=  await getreportData(process.env.REACT_APP_URl_DATAMOCK_LOCAL,data,Authorization);
+  // console.log(getDataOne);
+  if(getDataOne.status){
+   setChartData({labels,datasets:getDataOne.data.datasets})
   }
-  else{
-    console.log("NOT FOUND")
-    Swal.fire({
-      title: 'ไม่พบข้อมูล!',
-      icon: 'error',
-      confirmButtonText: 'ตกลง'
-    })
- let label = []
-    
-    setChartData({label,datasets:[]});  
-  }
-
+    else{
+     console.log("NOT FOUND")
+     console.log(getDataOne);
+     Swal.fire({
+       title: getDataOne.data,
+       icon: 'error',
+       confirmButtonText: 'ตกลง'
+     })
+     let label = [] 
+     setChartData({label,datasets:[]});    
+   }
 }
 
 
@@ -338,50 +302,54 @@ const Logout = ()=>{
   localStorage.removeItem("accessToken");
   window.location.href = "/login";
 }
-const GetReportwo = ()=>{
-  document.getElementById('report2').style.display ='block';
-  document.getElementById('report3').style.display = 'none';
-  document.getElementById('report1').style.display = 'none';
-  setChartData({labels,datasets:[]});
-  document.getElementById('Excel1').style.display = 'none';
+const GetReportwo = event =>{
+  let el = document.getElementById("report2");
+  if(el !== null){
+    document.getElementById('report2').style.display ='block';
+    document.getElementById('report3').style.display = 'none';
+    document.getElementById('report1').style.display = 'none';
+    setChartData({labels,datasets:[]});
+    document.getElementById('Excel1').style.display = 'none';
+  }
+
 }
 const GetReporone = ()=>{
+  let el = document.getElementById("report1");
+  if(el !== null){
   document.getElementById('report2').style.display ='none';
   document.getElementById('report1').style.display = 'block';
   document.getElementById('report3').style.display = 'none';
   setChartData({labels,datasets:[]});
   document.getElementById('Excel1').style.display = 'none';
+  }
 }
 const GetReporoneTree = ()=>{
-
+  let el = document.getElementById("report3");
+  if(el !== null){
   document.getElementById('report2').style.display ='none';
   document.getElementById('report1').style.display = 'none';
   document.getElementById('report3').style.display = 'block';
   setChartData({labels,datasets:[]});
   document.getElementById('Excel1').style.display = 'none';
 }
-const getExcelData = ()=>{
-  document.getElementById('report2').style.display ='none';
-  document.getElementById('report1').style.display = 'none';
-  document.getElementById('report3').style.display = 'none';
-  document.getElementById('Excel1').style.display = 'block';
-  setChartData({labels,datasets:[]});
 }
 
-const handleGeneratePdf = async()=>{
+// const getExcelData = ()=>{
+//   document.getElementById('report2').style.display ='none';
+//   document.getElementById('report1').style.display = 'none';
+//   document.getElementById('report3').style.display = 'none';
+//   document.getElementById('Excel1').style.display = 'block';
+//   setChartData({labels,datasets:[]});
+// }
 
-};
 
-const handleGenerateExcell = async()=>{
-
-};
 
 
 
 
 
 function checkpermission(event){
-  // console.log(event.target.value);
+
   let permission = parseInt(event.target.value);
  
   switch(permission){
@@ -405,7 +373,7 @@ function checkpermission(event){
   
 }
 
-// console.log(antigen);
+
   return (
     
 
@@ -437,11 +405,12 @@ function checkpermission(event){
   DMSC - REPORT
 </MovingText> 
           </Nav>
+          <br/>
           {/* <span class="material-symbols-outlined">
-lab_profile
+          <img  className="Nav" src={doccument} alt="monitoring" />
 </span>
-&nbsp;&nbsp;
-          <NavDropdown   title="รายงานEXCELL" id="basic-nav-dropdown" style={{'margin-right':50}}>
+
+          <NavDropdown   title="รายงานEXCELL" id="basic-nav-dropdown" style={{'margin-right':15}}>
             
               <NavDropdown.Item>
               <a onClick={getExcelData}>excell01</a>
@@ -475,21 +444,21 @@ lab_profile
               </NavDropdown.Item>
               
             </NavDropdown> */}
+            
           <span class="material-symbols-outlined">
           <img  className="Nav" src={monitoring} alt="monitoring" />
 </span>
 &nbsp;&nbsp;&nbsp; <NavDropdown   title="รายงาน" id="basic-nav-dropdown" style={{'margin-right':20}}>
             
               <NavDropdown.Item>
-              <a onClick={GetReporone} >หนังสือรับรองการแจ้ง/ใบอนุญาต</a>
-          
+              <li onClick={GetReporone}><a>หนังสือรับรองการแจ้ง/ใบอนุญาต</a></li>
               </NavDropdown.Item>
               <NavDropdown.Item>
-              <a onClick={GetReportwo}>บัญชีผู้ใช้งานระบบบูรณาการ</a>
+              <li onClick={GetReportwo}><a>บัญชีผู้ใช้งานระบบบูรณาการ</a></li>
               </NavDropdown.Item>
               {/* <NavDropdown.Divider /> */}
               <NavDropdown.Item>
-             <a onClick={GetReporoneTree}>บัญชีผู้ใช้งานระบบสนับสนุน</a>  
+             <li onClick={GetReporoneTree}><a>บัญชีผู้ใช้งานระบบสนับสนุน</a></li>
               </NavDropdown.Item>
               
             </NavDropdown>
@@ -498,7 +467,7 @@ lab_profile
 </span>&nbsp;&nbsp;&nbsp;
             <NavDropdown   title={decodeJwt.uname} id="basic-nav-dropdown" style={{'margin-right':50}}>
               <NavDropdown.Item>
-              <button  type="button" class="btn btn-light" onClick={Logout}>ออกจากระบบ     <span class="material-symbols-outlined">
+              <button  type="button" class="btn btn-light" onClick={Logout}>ออกจากระบบ<span class="material-symbols-outlined">
             <img  className="Nav" src={logout} alt="logout" />  
 </span></button>
          
@@ -518,43 +487,7 @@ lab_profile
 
    
 {/* excel data  begin*/}
-{/* <div className="card col-md-8 center" id="Excel1" style={{"display":"none"}}>
-      
-  <div className="container">
-    รายงานEXCEL 1
-  <div className="row">
-    <div className="col">
- <br/>
- <InputGroup className="mb-4">
-      <InputGroup.Text id="basic-addon1">รหัสเชื้อโรค </InputGroup.Text>
-      <Select className="basic-multi-select selectEXcelOne"
-                 classNamePrefix="หน่วยงาน"
-                 isMulti
-           options={optionsExcelAntigen} id="Antigen" name="Antigen" onChange={(chioce) => {setantigen(chioce)}} />
-      </InputGroup> 
-    </div>
-    <div className="col">
-    <br/> 
-    <InputGroup className="mb-3">
-        <InputGroup.Text id="basic-addon1">หน่วยงาน </InputGroup.Text>
-        <Form.Control
-          aria-label="Default"
-          aria-describedby="inputGroup-sizing-default"
-          id="username" name="username"
-        />
-      </InputGroup>
- 
-    </div>
- 
-    <div className="col">
-    <br/>
-  
-      <Button onClick={SerachDataTree}>ค้นหาข้อมูล</Button>
-    </div>
-    
-  </div>
-</div>
-  </div> */}
+
 
 {/* excel data end*/}
     <div className="card col-md-8 center" id="report3" style={{"display":"none","width":1300,"height":100}}>
@@ -613,10 +546,10 @@ lab_profile
       
       <MDBBtnGroup aria-label='Basic example'>
       <MDBBtn  onClick={SerachDataTree} style={{backgroundColor:'#4896f0'}}>ค้นหาข้อมูล</MDBBtn>  
-      <MDBBtn  style={{ backgroundColor: '#f23f3f' }}>
+      <MDBBtn  onClick={()=>Dowloadfile03('pdf')}  style={{ backgroundColor: '#f23f3f' }}>
          PDF
         </MDBBtn>
-      <MDBBtn  onClick={handleGenerateExcell} color='success'>Excell</MDBBtn>
+      <MDBBtn   onClick={()=>Dowloadfile03('excel')}  color='success'>Excell</MDBBtn>
        
       </MDBBtnGroup>
       </div>
@@ -780,7 +713,27 @@ lab_profile
   );
 }
 
-
+async function getreportData(url,data,Authorization){
+  const response = await axios({
+    method: 'get',
+    url: url,
+      headers:{ 
+      'content-type': 'application/json;UTF-8',
+      'Authorization':Authorization
+    },
+    params: data
+  });
+  if(response.data.data.status){
+    return {"status":true,"data":response.data.data}
+  }
+  else{
+    if(response.data.data.variable){
+      
+      return {"status":false,"data":"validate data error"+response.data.data.variable}
+    }
+    return {"status":false,"data":"Data not found"}
+  }
+}
 
 export default ReportChart;
 
