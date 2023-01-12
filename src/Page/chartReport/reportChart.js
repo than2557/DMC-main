@@ -19,9 +19,8 @@ import { MDBFooter,MDBBtn,MDBBtnGroup, MDBIcon } from 'mdb-react-ui-kit';
 import MovingText from 'react-moving-text'
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import FileDownload from 'react-file-download';
-import blob  from 'blob';
-import * as XLSX from 'xlsx/xlsx.mjs';
+
+
 
 
 
@@ -33,6 +32,8 @@ function ReportChart() {
   let Authorization = 'Bearer'+' '+token;
  
 const checkAccessToken = async()=>{
+  console.log("Date exp"+":"+new Date(decodeJwt.exp));
+  console.log(new Date())
   if(new Date(decodeJwt.exp) < new Date()){
     new Swal("Failed","Token error");
     console.log("Error Token");
@@ -378,7 +379,7 @@ function checkpermission(event){
     
 
 
-    <div style={{"height":970,"background-color": 'rgb(175 165 165 / 20%)'}}>
+    <div style={{"background-color": 'rgb(175 165 165 / 20%)'}}>
       
         <Navbar bg="light"  expand="lg" className="backgourndColormand">
       <Container fluid>
@@ -395,13 +396,13 @@ function checkpermission(event){
          
 
 <MovingText
- type="effect3D"
- duration="3000ms"
- delay="20s"
- direction="normal"
- timing="ease-in-out"
- iteration="infinite"
- fillMode="backwards">
+type="fadeIn"
+duration="1000ms"
+delay="1s"
+direction="normal"
+timing="linear"
+iteration="2"
+fillMode="both">
   DMSC - REPORT
 </MovingText> 
           </Nav>
@@ -448,7 +449,7 @@ function checkpermission(event){
           <span class="material-symbols-outlined">
           <img  className="Nav" src={monitoring} alt="monitoring" />
 </span>
-&nbsp;&nbsp;&nbsp; <NavDropdown   title="รายงาน" id="basic-nav-dropdown" style={{'margin-right':20}}>
+&nbsp; <NavDropdown   title="รายงาน" id="basic-nav-dropdown" style={{'margin-right':20}}>
             
               <NavDropdown.Item>
               <li onClick={GetReporone}><a>หนังสือรับรองการแจ้ง/ใบอนุญาต</a></li>
@@ -464,8 +465,8 @@ function checkpermission(event){
             </NavDropdown>
             <span class="material-symbols-outlined">
             <img  className="Nav" src={account} alt="account" />  
-</span>&nbsp;&nbsp;&nbsp;
-            <NavDropdown   title={decodeJwt.uname} id="basic-nav-dropdown" style={{'margin-right':50}}>
+</span>
+            <NavDropdown   title={decodeJwt.uname} id="basic-nav-dropdown" style={{'margin-right':70}}>
               <NavDropdown.Item>
               <button  type="button" class="btn btn-light" onClick={Logout}>ออกจากระบบ<span class="material-symbols-outlined">
             <img  className="Nav" src={logout} alt="logout" />  
@@ -475,9 +476,6 @@ function checkpermission(event){
             </NavDropdown>
        
         </Navbar.Collapse>
-        <span class="material-symbols-outlined">
-<img  className="Nav" src={lightbulb} alt="lightbulb" />  
-</span>
       </Container>
     </Navbar>
 
@@ -490,7 +488,7 @@ function checkpermission(event){
 
 
 {/* excel data end*/}
-    <div className="card col-md-8 center" id="report3" style={{"display":"none","width":1300,"height":100}}>
+    <div className="card col-md-8 center" id="report3" style={{"display":"none"}}>
       <input id="inputreport3" value="report3"  hidden/>
   <div className="container">
   <p style={{"margin-top":-25}}> รายงานบัญชีผู้ใช้งานระบบสนับสนุนพระราชบัญญัติเชื้อโรคและพิษจากสัตว์ออนไลน์ </p>
@@ -498,7 +496,7 @@ function checkpermission(event){
     <div className="col">
 
  <InputGroup className="mb-4">
-      <InputGroup.Text id="basic-addon1"  style={{height:40}}>สิทธิการใช้งาน </InputGroup.Text>
+      <InputGroup.Text id="basic-addon1"  style={{height:40,'background-color': "#ebe8e8"}}>สิทธิการใช้งาน </InputGroup.Text>
       <Form.Select aria-label="Default select example" id="usertype" name="usertype" onChange={checkpermission}>
       <option value="" >--สิทธิการใช้งาน--</option>
       <option value="1" >ผู้ใช้งานทั้วไป</option>
@@ -510,7 +508,7 @@ function checkpermission(event){
     <div className="col">
     
     <InputGroup className="mb-2">
-        <InputGroup.Text id="basic-addon1"  style={{height:40}}>ประเภทหน่วยงาน </InputGroup.Text>
+        <InputGroup.Text id="basic-addon1"  style={{height:40,'background-color': "#ebe8e8"}}>ประเภทหน่วยงาน </InputGroup.Text>
         <Form.Select aria-label="Default select example" id="comtype" name="comtype" onChange={e=>setComType(e.target.value)}>
         <option value="0" selected="">--ประเภทหน่วยงาน--</option>
         {
@@ -530,7 +528,7 @@ function checkpermission(event){
     <div className="col">
   
     <InputGroup className="mb-2">
-      <InputGroup.Text id="basic-addon1"  style={{height:40}}>ปี</InputGroup.Text>
+      <InputGroup.Text id="basic-addon1"  style={{height:40,'background-color': "#ebe8e8"}}>ปี</InputGroup.Text>
       <Form.Select aria-label="Default select example" id="year" name="year" onChange={e=>setYear(e.target.value)}>
       <option value="0" selected="">--เลือกปี--</option>
       <option value="2022">2022</option>
@@ -542,8 +540,7 @@ function checkpermission(event){
       </Form.Select>
       </InputGroup>
     </div>
-    <div className="col">
-      
+    <div className="col"> 
       <MDBBtnGroup aria-label='Basic example'>
       <MDBBtn  onClick={SerachDataTree} style={{backgroundColor:'#4896f0'}}>ค้นหาข้อมูล</MDBBtn>  
       <MDBBtn  onClick={()=>Dowloadfile03('pdf')}  style={{ backgroundColor: '#f23f3f' }}>
@@ -558,19 +555,19 @@ function checkpermission(event){
 </div>
   </div>
     {/* end of form tree */}
-    <div className="card col-md-8 center" id="report2" style={{"display":"none","width":1300,"height":100}}>
+    <div className="card col-md-8 center" id="report2" style={{"display":"none"}}>
       <input id="inputreport2" value="report2"  hidden/>
   <div className="container">
   <p style={{"margin-top":-25}}>  รายงานบัญชีผู้ใช้งานระบบบูรณาการข้อมูลประชาชนและการบริการภาครัฐ</p>
   <div className="row">
-    <div className="col">
+    {/* <div className="col">
 
     
-    </div>
+    </div> */}
     <div className="col">
 
     <InputGroup className="mb-2">
-        <InputGroup.Text id="basic-addon1" style={{height:40}}>ระบบงาน</InputGroup.Text>
+        <InputGroup.Text id="basic-addon1" style={{height:40,'background-color': "#ebe8e8"}}>ระบบงาน</InputGroup.Text>
         <Form.Select  onChange={e=>{
           const select = e.target;
           setId(parseInt(e.target.value)) 
@@ -593,7 +590,7 @@ function checkpermission(event){
     <div className="col">
    
     <InputGroup className="mb-2">
-      <InputGroup.Text id="basic-addon1"  style={{height:40}}>ปี</InputGroup.Text>
+      <InputGroup.Text id="basic-addon1"  style={{height:40,'background-color': "#ebe8e8"}}>ปี</InputGroup.Text>
       <Form.Select aria-label="Default select example" id="year" name="year" onChange={e=>setYear(e.target.value)}>
       <option value="0" selected="">--เลือกปี--</option>
       <option value="2022">2022</option>
@@ -614,14 +611,14 @@ function checkpermission(event){
       </MDBBtn>
     <MDBBtn  onClick={()=>Dowloadfile02('excel')} color='success'>Excell</MDBBtn> 
        
-      </MDBBtnGroup>
+      </MDBBtnGroup>  
       </div>
   </div>
 </div>
   </div>
 {/* <div>end form report 2</div> */}
 
-  <div className="card col-md-8 center" id="report1" style={{"display":"block","width":1300,"height":100}}>
+  <div className="card col-md-8 center" id="report1" style={{"display":"block"}}>
   <input id="inputreport1" value="report1"  hidden/>
   <div className="container">
 <p style={{"margin-top":-25}}>  รายงานผลการดำเนินการเกี่ยวกับหนังสือรับรองการแจ้ง/ใบอนุญาต</p>
@@ -629,7 +626,7 @@ function checkpermission(event){
     <div className="col">
  
       <InputGroup className="mb-2">
-        <InputGroup.Text id="basic-addon1"  style={{height:40}}>ประเภท</InputGroup.Text>
+        <InputGroup.Text id="basic-addon1"  style={{height:40,'background-color': "#ebe8e8"}}>ประเภท</InputGroup.Text>
         <Form.Select aria-label="Default select example" id="type" name="type" onChange={e=>setType(parseInt(e.target.value))}>
         <option value="0" selected="">--เลือกประเภท--</option>
       <option value="1">ใบอนุญาต</option>
@@ -640,7 +637,7 @@ function checkpermission(event){
     <div className="col">
 
       <InputGroup className="mb-4">
-      <InputGroup.Text id="basic-addon1"  style={{height:40}}>สถานะ</InputGroup.Text>
+      <InputGroup.Text id="basic-addon1"  style={{height:40,'background-color': "#ebe8e8"}}>สถานะ</InputGroup.Text>
       <Form.Select aria-label="Default select example" id="state" name="state" onChange={e=>setState(parseInt(e.target.value))}>
       <option value="null">--เลือกสถานะ--</option>
       <option value="0" selected="">รอยืนเอกสาร</option>
@@ -658,7 +655,7 @@ function checkpermission(event){
     <div className="col">
   
       <InputGroup className="mb-2">
-      <InputGroup.Text id="basic-addon1"  style={{height:40}}>ปี</InputGroup.Text>
+      <InputGroup.Text id="basic-addon1"  style={{height:40,'background-color': "#ebe8e8"}}>ปี</InputGroup.Text>
       <Form.Select aria-label="Default select example" id="year" name="year" onChange={e=>setYear(e.target.value)}>
       <option value="0" selected="">--เลือกปี--</option>
       <option value="2022">2022</option>
@@ -731,7 +728,7 @@ async function getreportData(url,data,Authorization){
       
       return {"status":false,"data":"validate data error"+response.data.data.variable}
     }
-    return {"status":false,"data":"Data not found"}
+    return {"status":false,"data":"ไม่พบข้อมูล!!!"}
   }
 }
 

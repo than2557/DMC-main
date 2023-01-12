@@ -8,6 +8,8 @@ const fileDownload = require('js-file-download');
 const Ajv = require('ajv');
 const ajv = new Ajv()
 const DmscrSc = require('./schema/DMSC.json');
+const fs = require('fs');
+const  jwtdecode = require('jwt-decode');
 app.use(cors());
 // app.use(bodyParser());
 dotenv.config();
@@ -23,6 +25,33 @@ app.get('/',(req,res)=>{
     res.send('Hello, Express!');
 })
 
+
+app.post(process.env.EXPRESS_APP_LOGIN,async(req,res)=>{
+try{
+  const body = req.query;
+  const aut = req.headers.authorization;
+  const decodeJwt =  jwtdecode(aut)
+  let data = {
+    username: body.username,
+    timeDatetielogin : new Date(decodeJwt.iss)
+};
+
+let jsonString = JSON.stringify(data);
+
+fs.writeFile(`loger-${new Date().getDate()+"-"+new Date().getMonth()+"-"+new Date().getFullYear()+"-"+new Date().getHours()+"-"+new Date().getMinutes()+"-"+new Date() }-Login.json`, jsonString, (err) => {
+    if (err) {
+        console.error(err);
+        return;
+    };
+    console.log("File has been created");
+});
+return res.send({"message":"log created"});
+}catch(e){
+  console.log(e)
+  return({error:e.stack,error:e});
+}
+ 
+})
 
 app.get(process.env.EXPRESS_APP_SYSTEM_LIST,async(req,res) =>{
 try{
@@ -100,7 +129,18 @@ app.get(process.env.EXPRESS_APP_REPORT_02,async(req,res) =>{
             'authorization': aut,
             'Content-Type':'application/json;UTF-8'
           }})
-         
+          const validate = ajv.compile(DmscrSc.DmscReport)
+          const valid = ajv.validate(DmscrSc.DmscReport,report02.data);
+                     if (!valid) {
+                    
+                      console.log(ajv.errors)
+                      const error =  await validateError(ajv.errors);
+                      if(!error.data.status){
+          
+                        return res.send(error)
+                      }
+                    
+                    }
         return res.send({"data":report02.data});
         }catch(e){
             console.log(e)
@@ -117,7 +157,18 @@ app.get(process.env.EXPRESS_APP_REPORT_03,async(req,res) =>{
            const report03 = await axios.get(process.env.REACT_APP_URL_REPORT_TREE,{data:body,headers:{
             'authorization': aut
           }})
-         
+          const validate = ajv.compile(DmscrSc.DmscReport)
+          const valid = ajv.validate(DmscrSc.DmscReport,report03.data);
+                     if (!valid) {
+                    
+                      console.log(ajv.errors)
+                      const error =  await validateError(ajv.errors);
+                      if(!error.data.status){
+          
+                        return res.send(error)
+                      }
+                    
+                    }
         return res.send({"data":report03.data});
         }catch(e){
             return res.send({"data":{status:false}});
@@ -153,9 +204,7 @@ app.post(process.env.EXPRESS_APP_REPORT_EXCELL_PDF_02,async(req,res)=>{
  const aut = req.headers.authorization;
  const body = {'id': parseInt(req.query.id),'year':req.query.year,'systemname':req.query.systemname};
   console.log(body);
-  // const fake = {"image":"jp1"};  
   let url = process.env.REACT_APP_URL_REPORT_02_FILE+"/"+req.query.typeDowload.typedata;
-  // let url2 ="http://192.168.33.80:9877/DmscReportGateway/api/v1/excel/download";
   const respon = await axios.get(url,{data:body,responseType:'blob',headers:{
     'authorization': aut,
   }})

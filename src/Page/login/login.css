@@ -1,21 +1,23 @@
 html {
-  z-index: -1;
-  --gradDark: hsl(144, 39%, 28%);
-  --gradLight: hsl(165, 38%, 35%);
-  background: linear-gradient(to bottom, var(--gradDark), var(--gradLight));
+  background-color: #e9e3e3;
 }
 
 
 text{font-size: small;}
 .Login {
   text-align: center;
-  
+  background-color: #e9e3e3;
 }
 .App-logo {
   height: 40vmin;
   pointer-events: none;
 }
-
+.backgourndLogin{
+  --gradDark: hsla(0, 0%, 100%, 0.906);
+--gradLight: hsla(112, 20%, 64%, 0.728);
+background: linear-gradient(to bottom, var(--gradDark), var(--gradLight));
+text-align: center;
+}
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
@@ -40,7 +42,7 @@ width:auto;
   background-color: rgba(255, 255, 255, 0.356);
   text-align: center;
  margin: auto;
-  width: 50%;
+  width: 60%;
 
   padding: 30px;
 }

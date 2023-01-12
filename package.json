@@ -1,6 +1,6 @@
 {
   "name": "loginpage",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "secure": false,
   "Access-Control-Allow-Origin": "http://localhost:3005",
   "private": true,
@@ -20,7 +20,6 @@
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "file-saver": "^2.0.5",
-    "fs": "^0.0.1-security",
     "generate-pdf-from-react-html": "^1.0.5",
     "html-to-image": "^1.11.4",
     "install": "^0.13.0",
