@@ -1,3 +1,4 @@
+'use strict';
 const express = require('express');
 const app = express();
 const cors = require('cors');
@@ -10,6 +11,9 @@ const ajv = new Ajv()
 const DmscrSc = require('./schema/DMSC.json');
 const fs = require('fs');
 const  jwtdecode = require('jwt-decode');
+const { createLogger, format, transports } = require('winston');
+const path = require('path');
+
 app.use(cors());
 // app.use(bodyParser());
 dotenv.config();
@@ -28,6 +32,7 @@ app.get('/',(req,res)=>{
 
 app.post(process.env.EXPRESS_APP_LOGIN,async(req,res)=>{
 try{
+  // check status login data // for create log error login  case false // no flow data respon 
   const body = req.query;
   const aut = req.headers.authorization;
   const decodeJwt =  jwtdecode(aut)
@@ -38,16 +43,12 @@ try{
 
 let jsonString = JSON.stringify(data);
 
-fs.writeFile(`loger-${new Date().getDate()+"-"+new Date().getMonth()+"-"+new Date().getFullYear()+"-"+new Date().getHours()+"-"+new Date().getMinutes()+"-"+new Date() }-Login.json`, jsonString, (err) => {
-    if (err) {
-        console.error(err);
-        return;
-    };
-    console.log("File has been created");
-});
+
+await loger(jsonString,'Dmsc-login');
 return res.send({"message":"log created"});
 }catch(e){
   console.log(e)
+
   return({error:e.stack,error:e});
 }
  
@@ -233,7 +234,49 @@ app.post(process.env.EXPRESS_APP_REPORT_EXCELL_PDF_03,async(req,res)=>{
 
 })
 
+async function loger(data,log,error){
+  const env = process.env.NODE_ENV || 'development';
+const logDir = 'log';
 
+// Create the log directory if it does not exist
+if (!fs.existsSync(logDir)) {
+  fs.mkdirSync(logDir);
+}
+
+const filename = path.join(logDir, `${log}.log`);
+
+const logger = createLogger({
+  // change level if in dev environment versus production
+  level: env === 'development' ? 'debug' : 'info',
+  format: format.combine(
+    format.timestamp({
+      format: 'YYYY-MM-DD HH:mm:ss'
+    }),
+    format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`)
+  ),
+  transports: [
+    new transports.Console({
+      level: 'info',
+      format: format.combine(
+        format.colorize(),
+        format.printf(
+          info => `${info.timestamp} ${info.level}: ${info.message}`
+        )
+      )
+    }),
+    new transports.File({ filename })
+  ]
+});
+if(error){
+  logger.error(error);
+}
+else{
+  logger.info(data);
+}
+
+
+
+}
 
 async function validateError(errors){
   let DataErrorMessage

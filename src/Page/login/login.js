@@ -44,20 +44,12 @@ console.log(JWtTokenDecode);
   
   }
   else{
-    console.log("else create log")
-    // const response = await axios({
-    //   method: 'post',
-    //   url: process.env.REACT_APP_URL_CREATE_LOG_LOGIN,
-    //     headers:{ 
-    //     'content-type': 'application/json;UTF-8',
-    //     'Authorization':datares.token
-    //   },
-    //   params: data
-    // });
+  
     const response = await CreateLoglogin(process.env.REACT_APP_URL_CREATE_LOG_LOGIN,{
       username,
       password,
-      "appid":"01"
+      "appid":"01",
+      "status":datares.status
     },datares.token)
 
     if(response.status){

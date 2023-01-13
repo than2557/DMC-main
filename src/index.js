@@ -6,7 +6,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter } from 'react-router-dom/dist';
-import 'mdb-react-ui-kit/dist/css/mdb.min.css';
+// import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

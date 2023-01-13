@@ -11,7 +11,9 @@ import  lightbulb from '../../img/lightbulb_FILL0_wght400_GRAD0_opsz48.svg';
 import monitoring from '../../img/monitoring_FILL0_wght400_GRAD0_opsz48.svg';
 import doccument from '../../img/description_FILL0_wght400_GRAD0_opsz48.svg';
 import  logout from '../../img/logout_FILL0_wght400_GRAD0_opsz48.svg';
-import search from '../../img/search_FILL0_wght200_GRAD-25_opsz20.svg';
+import search from '../../img/search_FILL0_wght300_GRAD-25_opsz20.svg';  
+import pdf from '../../img/picture_as_pdf_FILL0_wght300_GRAD-25_opsz20.svg';  
+import excel from '../../img/file-excel-regular.svg';  
 import 'twin.macro';
 import jwt_decode  from "jwt-decode";
 import 'chart.js/auto'; 
@@ -380,7 +382,7 @@ function checkpermission(event){
 
 
     <div style={{"background-color": 'rgb(175 165 165 / 20%)'}}>
-      
+            
         <Navbar bg="light"  expand="lg" className="backgourndColormand">
       <Container fluid>
         <Navbar.Brand><img  className="Nav" src={logo} alt="Logo" /></Navbar.Brand>
@@ -405,81 +407,53 @@ iteration="2"
 fillMode="both">
   DMSC - REPORT
 </MovingText> 
+
           </Nav>
           <br/>
-          {/* <span class="material-symbols-outlined">
-          <img  className="Nav" src={doccument} alt="monitoring" />
-</span>
-
-          <NavDropdown   title="รายงานEXCELL" id="basic-nav-dropdown" style={{'margin-right':15}}>
-            
-              <NavDropdown.Item>
-              <a onClick={getExcelData}>excell01</a>
-              </NavDropdown.Item>
-
-              <NavDropdown.Item>
-              <a>excell02</a>
-              </NavDropdown.Item>
- 
-              <NavDropdown.Item>
-             <a >excell03</a>  
-              </NavDropdown.Item>
-              
-              <NavDropdown.Item >
-              <a >excell04</a>  
-              </NavDropdown.Item>
-              
-              <NavDropdown.Item>
-              <a>excell05</a>
-          
-              </NavDropdown.Item>
-              
-              <NavDropdown.Item>
-              <a>excell06</a>
-          
-              </NavDropdown.Item>
-              
-              <NavDropdown.Item>
-              <a>excell07</a>
-          
-              </NavDropdown.Item>
-              
-            </NavDropdown> */}
-            
+       
           <span class="material-symbols-outlined">
           <img  className="Nav" src={monitoring} alt="monitoring" />
 </span>
-&nbsp; <NavDropdown   title="รายงาน" id="basic-nav-dropdown" style={{'margin-right':20}}>
+&nbsp;
+<Nav  className="me-3 my-2 my-lg-0"navbarScroll > <NavDropdown   title="รายงาน" id="basic-nav-dropdown" style={{'margin-right':20}}>
             
-              <NavDropdown.Item>
-              <li onClick={GetReporone}><a>หนังสือรับรองการแจ้ง/ใบอนุญาต</a></li>
+              <NavDropdown.Item onClick={GetReporone}>
+                
+              <li ><a>หนังสือรับรองการแจ้ง/ใบอนุญาต</a></li>
               </NavDropdown.Item>
+              <NavDropdown.Divider />
               <NavDropdown.Item>
               <li onClick={GetReportwo}><a>บัญชีผู้ใช้งานระบบบูรณาการ</a></li>
               </NavDropdown.Item>
-              {/* <NavDropdown.Divider /> */}
+              <NavDropdown.Divider />
               <NavDropdown.Item>
              <li onClick={GetReporoneTree}><a>บัญชีผู้ใช้งานระบบสนับสนุน</a></li>
               </NavDropdown.Item>
               
             </NavDropdown>
-            <span class="material-symbols-outlined">
+
+      </Nav>
+
+      <Nav  className="me-1 my-1 my-lg-0"navbarScroll > 
+        <span class="material-symbols-outlined mt-2">
             <img  className="Nav" src={account} alt="account" />  
-</span>
+            </span>
             <NavDropdown   title={decodeJwt.uname} id="basic-nav-dropdown" style={{'margin-right':70}}>
               <NavDropdown.Item>
               <button  type="button" class="btn btn-light" onClick={Logout}>ออกจากระบบ<span class="material-symbols-outlined">
             <img  className="Nav" src={logout} alt="logout" />  
-</span></button>
+            </span>
+            </button>
          
               </NavDropdown.Item>
             </NavDropdown>
+      </Nav>
+            
        
         </Navbar.Collapse>
       </Container>
     </Navbar>
 
-    {/* hello side bar*/}
     
     <br/>
 
@@ -488,14 +462,14 @@ fillMode="both">
 
 
 {/* excel data end*/}
-    <div className="card col-md-8 center" id="report3" style={{"display":"none"}}>
+    <div className="card col-md-11 center" id="report3" style={{"display":"none"}}>
       <input id="inputreport3" value="report3"  hidden/>
   <div className="container">
   <p style={{"margin-top":-25}}> รายงานบัญชีผู้ใช้งานระบบสนับสนุนพระราชบัญญัติเชื้อโรคและพิษจากสัตว์ออนไลน์ </p>
   <div className="row">
-    <div className="col">
+  <div className="col-md-4">
 
- <InputGroup className="mb-4">
+  <InputGroup className="mb-2">
       <InputGroup.Text id="basic-addon1"  style={{height:40,'background-color': "#ebe8e8"}}>สิทธิการใช้งาน </InputGroup.Text>
       <Form.Select aria-label="Default select example" id="usertype" name="usertype" onChange={checkpermission}>
       <option value="" >--สิทธิการใช้งาน--</option>
@@ -505,7 +479,7 @@ fillMode="both">
       </Form.Select>
       </InputGroup> 
     </div>
-    <div className="col">
+    <div className="col-md-4">
     
     <InputGroup className="mb-2">
         <InputGroup.Text id="basic-addon1"  style={{height:40,'background-color': "#ebe8e8"}}>ประเภทหน่วยงาน </InputGroup.Text>
@@ -525,7 +499,7 @@ fillMode="both">
       </Form.Select>
       </InputGroup> */}
     </div>
-    <div className="col">
+    <div className="col-md-2">
   
     <InputGroup className="mb-2">
       <InputGroup.Text id="basic-addon1"  style={{height:40,'background-color': "#ebe8e8"}}>ปี</InputGroup.Text>
@@ -540,15 +514,12 @@ fillMode="both">
       </Form.Select>
       </InputGroup>
     </div>
-    <div className="col"> 
-      <MDBBtnGroup aria-label='Basic example'>
-      <MDBBtn  onClick={SerachDataTree} style={{backgroundColor:'#4896f0'}}>ค้นหาข้อมูล</MDBBtn>  
-      <MDBBtn  onClick={()=>Dowloadfile03('pdf')}  style={{ backgroundColor: '#f23f3f' }}>
-         PDF
-        </MDBBtn>
-      <MDBBtn   onClick={()=>Dowloadfile03('excel')}  color='success'>Excell</MDBBtn>
-       
-      </MDBBtnGroup>
+    <div className="col-2"> 
+    <div class="btn-group" role="group" aria-label="Basic example">
+  <button type="button"  onClick={SerachDataTree}  class="btn btn-outline-primary"><img  className="" src={search} alt="search" style={{width:20}}/></button>
+  <button type="button" onClick={()=>Dowloadfile('pdf')}  class="btn btn-outline-danger"><img  className="" src={pdf} alt="pdf" style={{width:30}}/></button>
+  <button onClick={()=>Dowloadfile('excel')}  type="button" class="btn btn-outline-success"><img  className="" src={excel} alt="excel" style={{width:20}}/></button>
+</div>
       </div>
     
   </div>
@@ -564,7 +535,7 @@ fillMode="both">
 
     
     </div> */}
-    <div className="col">
+    <div className="col-md-4">
 
     <InputGroup className="mb-2">
         <InputGroup.Text id="basic-addon1" style={{height:40,'background-color': "#ebe8e8"}}>ระบบงาน</InputGroup.Text>
@@ -587,7 +558,7 @@ fillMode="both">
       </Form.Select>
       </InputGroup> */}
     </div>
-    <div className="col">
+    <div className="col-md-4">
    
     <InputGroup className="mb-2">
       <InputGroup.Text id="basic-addon1"  style={{height:40,'background-color': "#ebe8e8"}}>ปี</InputGroup.Text>
@@ -602,16 +573,13 @@ fillMode="both">
       </Form.Select>
       </InputGroup>
     </div>
-    <div className="col">
+    <div className="col-md-2">
       
-      <MDBBtnGroup aria-label='Basic example'>
-      <MDBBtn  onClick={SerachDataTwo} style={{backgroundColor:'#4896f0'}}>ค้นหาข้อมูล</MDBBtn>  
-      <MDBBtn onClick={()=>Dowloadfile02('pdf')} style={{ backgroundColor: '#f23f3f' }}>
-       PDF
-      </MDBBtn>
-    <MDBBtn  onClick={()=>Dowloadfile02('excel')} color='success'>Excell</MDBBtn> 
-       
-      </MDBBtnGroup>  
+    <div class="btn-group" role="group" aria-label="Basic example">
+  <button type="button"  onClick={SerachDataTwo}  class="btn btn-outline-primary"><img  className="" src={search} alt="search" style={{width:20}}/></button>
+  <button type="button" onClick={()=>Dowloadfile('pdf')}  class="btn btn-outline-danger"><img  className="" src={pdf} alt="pdf" style={{width:30}}/></button>
+  <button onClick={()=>Dowloadfile('excel')}  type="button" class="btn btn-outline-success"><img  className="" src={excel} alt="excel" style={{width:20}}/></button>
+</div>
       </div>
   </div>
 </div>
@@ -623,9 +591,9 @@ fillMode="both">
   <div className="container">
 <p style={{"margin-top":-25}}>  รายงานผลการดำเนินการเกี่ยวกับหนังสือรับรองการแจ้ง/ใบอนุญาต</p>
   <div className="row">
-    <div className="col">
+    <div className="col-md-3">
  
-      <InputGroup className="mb-2">
+      <InputGroup className="col-mb-2">
         <InputGroup.Text id="basic-addon1"  style={{height:40,'background-color': "#ebe8e8"}}>ประเภท</InputGroup.Text>
         <Form.Select aria-label="Default select example" id="type" name="type" onChange={e=>setType(parseInt(e.target.value))}>
         <option value="0" selected="">--เลือกประเภท--</option>
@@ -634,9 +602,9 @@ fillMode="both">
     </Form.Select>
       </InputGroup>
     </div>
-    <div className="col">
+    <div className="col-md-3">
 
-      <InputGroup className="mb-4">
+      <InputGroup className="col-md-3">
       <InputGroup.Text id="basic-addon1"  style={{height:40,'background-color': "#ebe8e8"}}>สถานะ</InputGroup.Text>
       <Form.Select aria-label="Default select example" id="state" name="state" onChange={e=>setState(parseInt(e.target.value))}>
       <option value="null">--เลือกสถานะ--</option>
@@ -652,7 +620,7 @@ fillMode="both">
       </Form.Select>
       </InputGroup>
     </div>
-    <div className="col">
+    <div className="col-md-2">
   
       <InputGroup className="mb-2">
       <InputGroup.Text id="basic-addon1"  style={{height:40,'background-color': "#ebe8e8"}}>ปี</InputGroup.Text>
@@ -667,16 +635,14 @@ fillMode="both">
       </Form.Select>
       </InputGroup>
     </div>
-    <div className="col">
-      
-    <MDBBtnGroup aria-label='Basic example'>
-    <MDBBtn  onClick={SerachDataone} style={{backgroundColor:'#4896f0'}}>ค้นหาข้อมูล</MDBBtn>  
-    <MDBBtn onClick={()=>Dowloadfile('pdf')} style={{ backgroundColor: '#f23f3f' }}>
-       PDF
-      </MDBBtn>
-    <MDBBtn  onClick={()=>Dowloadfile('excel')} color='success'>Excell</MDBBtn> 
-     
-    </MDBBtnGroup>
+    <div className="col-md-2">
+ 
+<div class="btn-group" role="group" aria-label="Basic example">
+  <button type="button"  onClick={SerachDataone}  class="btn btn-outline-primary"><img  className="" src={search} alt="search" style={{width:20}}/></button>
+  <button type="button" onClick={()=>Dowloadfile('pdf')}  class="btn btn-outline-danger"><img  className="" src={pdf} alt="pdf" style={{width:30}}/></button>
+  <button onClick={()=>Dowloadfile('excel')}  type="button" class="btn btn-outline-success"><img  className="" src={excel} alt="excel" style={{width:20}}/></button>
+</div>
+ 
     </div>
  
   
@@ -685,8 +651,9 @@ fillMode="both">
 </div>
   </div>
   <br/>
+
   <div className="card container">
-    <div className="row"  id="chartID" style={{height:450}} ref={reportPDF}>
+    <div className="row"  id="chartID" ref={reportPDF}>
 
     <LineChart  options={options} ChartData={ChartData} />
     </div>
