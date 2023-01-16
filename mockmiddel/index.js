@@ -33,23 +33,31 @@ app.get('/',(req,res)=>{
 app.post(process.env.EXPRESS_APP_LOGIN,async(req,res)=>{
 try{
   // check status login data // for create log error login  case false // no flow data respon 
+
   const body = req.query;
-  const aut = req.headers.authorization;
-  const decodeJwt =  jwtdecode(aut)
-  let data = {
-    username: body.username,
-    timeDatetielogin : new Date(decodeJwt.iss)
-};
+  const login = await axios({
+    method: 'post',
+    url:process.env.REACT_APP_URL_LOGIN,
+    headers: {
+      'Content-Type':'application/json'
+    }, 
+    data:body
+  });
 
-let jsonString = JSON.stringify(data);
+let jsonString = JSON.stringify({"username":body.username,"appid":body.appid});
+let logdata = {"status":login.status,"header":login.config.headers["Content-Type"],jsonString,"IP":req.ip};
+console.log(login.data)
+if(login.data.status){
+  await loger(JSON.stringify(logdata),'Dmsc-login');
+  return res.send(login.data);
+}
 
 
-await loger(jsonString,'Dmsc-login');
-return res.send({"message":"log created"});
 }catch(e){
+  let data = {'error':e,'error':true,"IP":req.ip}
   console.log(e)
-
-  return({error:e.stack,error:e});
+  await loger(data,'Dmsc-login',data.error);
+  return res.send({error:e.stack,error:e});
 }
  
 })
@@ -101,13 +109,16 @@ app.get(process.env.EXPRESS_APP_REPORT_01,async(req,res) =>{
             'Authorization': aut,
             'Content-Type':'application/json;UTF-8'
           }})
+          let logdata = {"status":report01.status,"header":report01.config.headers["Content-Type"],body,"IP":req.ip,"res":true};
+          await loger(JSON.stringify(logdata),'Dmsc-report01');
           const valid = ajv.validate(DmscrSc.DmscReport,report01.data);
            if (!valid) {
-          
             console.log(ajv.errors)
             const error =  await validateError(ajv.errors);
-            if(!error.data.status){
 
+            if(!error.data.status){
+              let error_status = {error:true}
+              await loger(error,'Dmsc-report01',error_status.error);
               return res.send(error)
             }
           
@@ -115,7 +126,8 @@ app.get(process.env.EXPRESS_APP_REPORT_01,async(req,res) =>{
         return res.send({"data":report01.data});
         }catch(e){
             console.log(e)
-            return({error:e.stack,error:e});
+            await loger(e,'Dmsc-report01',true);
+            return res.send({"data":{"error":e.stack,"error":e,"status":false}});
         }
 })
 
@@ -137,14 +149,18 @@ app.get(process.env.EXPRESS_APP_REPORT_02,async(req,res) =>{
                       console.log(ajv.errors)
                       const error =  await validateError(ajv.errors);
                       if(!error.data.status){
-          
+                        let error_status = {error:true}
+                     await loger(error,'Dmsc-report02',error_status.error);
                         return res.send(error)
                       }
                     
                     }
+                    let logdata = {"status":report02.status,"header":report02.config.headers["Content-Type"],body,"IP":req.ip,"res":true};
+                    await loger(JSON.stringify(logdata),'Dmsc-report02');              
         return res.send({"data":report02.data});
         }catch(e){
             console.log(e)
+            await loger(e,'Dmsc-report02',true);
             return({error:e.stack,error:e});
         }
 })
@@ -170,8 +186,13 @@ app.get(process.env.EXPRESS_APP_REPORT_03,async(req,res) =>{
                       }
                     
                     }
-        return res.send({"data":report03.data});
+
+                    let logdata = {"status":report03.status,"header":report03.config.headers["Content-Type"],body,"IP":req.ip,"res":true};
+                    await loger(JSON.stringify(logdata),'Dmsc-report03');
+                    return res.send({"data":report03.data});
         }catch(e){
+          console.log(e)
+          await loger(e,'Dmsc-report03',true);
             return res.send({"data":{status:false}});
         } 
 })
@@ -257,6 +278,7 @@ const logger = createLogger({
   transports: [
     new transports.Console({
       level: 'info',
+      maxFiles: 10,
       format: format.combine(
         format.colorize(),
         format.printf(
@@ -264,11 +286,13 @@ const logger = createLogger({
         )
       )
     }),
-    new transports.File({ filename })
+   
+    new transports.File({ filename, maxsize:10485760  })
   ]
 });
 if(error){
-  logger.error(error);
+  let Error_logger = {"codeError":data.code,"Message":data.message,"ErrorStack":data.stack}
+  logger.error(JSON.stringify(Error_logger));
 }
 else{
   logger.info(data);

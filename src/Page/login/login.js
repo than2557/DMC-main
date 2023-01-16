@@ -16,9 +16,9 @@ const [username, setUsername] = useState();
 const [password, setPassword] = useState();
 //http://192.168.33.142:9876/DmscAuthorization/api/v1/login
 
-  const Login = async(e:SyntheticEvent) => {
+  const Login = async() => {
     
-  e.preventDefault();
+
     console.log({username,password,"appid":"01"})
     let data = JSON.stringify({
       username,
@@ -28,14 +28,19 @@ const [password, setPassword] = useState();
    let parseJSON =  JSON.parse(data)
     
 
- const datares = await postData(process.env.REACT_APP_LGIN_APP, data);
- console.log("status"+datares.status);
+ const datares = await postData(process.env.REACT_APP_URL_CREATE_LOG_LOGIN, {
+  username,
+  password,
+  "appid":"01"
+});
+console.log(datares);
+ console.log("status"+datares.data.status);
 
- if(datares.status){   
+ if(datares.data.status){   
 
-let JWtTokenDecode = jwt_decode(datares.token);
+let JWtTokenDecode = jwt_decode(datares.data.token);
 console.log(JWtTokenDecode);
-    localStorage.setItem('accessToken',datares.token);
+    localStorage.setItem('accessToken',datares.data.token);
   let dateToken = new Date(JWtTokenDecode.exp);
   // console.log(dateToken);
   if(new Date(dateToken) < new Date()){
@@ -44,17 +49,7 @@ console.log(JWtTokenDecode);
   
   }
   else{
-  
-    const response = await CreateLoglogin(process.env.REACT_APP_URL_CREATE_LOG_LOGIN,{
-      username,
-      password,
-      "appid":"01",
-      "status":datares.status
-    },datares.token)
-
-    if(response.status){
       window.location.href = "/chartReport"
-    }
   }
  }
  else{
@@ -126,33 +121,38 @@ console.log(JWtTokenDecode);
     </div>
   );
 
-  async function postData(url = '',data) {
 
-    const response = await fetch(url, {
-      method: 'POST', 
-      mode: 'cors',
-      headers:{ 
-        'Access-Control-Allow-Origin': '*',
-      'content-type': 'application/json;UTF-8' 
-      }, 
-      body: data 
-    });
-    return response.json(); 
-  }
 }
 
-async function CreateLoglogin(url,data,Authorization){
+
+async function postData(url,data) {
+try{
+  const response = await axios(url, {
+    method: 'post', 
+    headers:{ 
+    'content-type': 'application/json;UTF-8' 
+    }, 
+    params: data 
+  });
+  return response; 
+}catch(e){
+  console.log(e)
+  return e
+}
+
+}
+
+async function CreateLoglogin(url,data){
   const response = await axios({
     method: 'post',
     url: url,
       headers:{ 
       'content-type': 'application/json;UTF-8',
-      'Authorization':Authorization
     },
     params: data
   });
-  if(response.data.message){
-    return {"status":true}
+  if(response.data){
+    return response
   }
   else{
     return {"status":false}

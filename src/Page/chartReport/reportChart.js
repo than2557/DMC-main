@@ -282,8 +282,8 @@ const SerachDataone = async() =>{
 
   
   data = {type,state,year};
-  const getDataOne=  await getreportData(process.env.REACT_APP_URl_DATAMOCK_LOCAL,data,Authorization);
-  // console.log(getDataOne);
+  const getDataOne=  await getreportData(process.env.REACT_APP_URL_REPORT_ONE,data,Authorization);
+  console.log(getDataOne);
   if(getDataOne.status){
    setChartData({labels,datasets:getDataOne.data.datasets})
   }
@@ -417,9 +417,9 @@ fillMode="both">
 &nbsp;
 <Nav  className="me-3 my-2 my-lg-0"navbarScroll > <NavDropdown   title="รายงาน" id="basic-nav-dropdown" style={{'margin-right':20}}>
             
-              <NavDropdown.Item onClick={GetReporone}>
+              <NavDropdown.Item>
                 
-              <li ><a>หนังสือรับรองการแจ้ง/ใบอนุญาต</a></li>
+              <li onClick={GetReporone}><a>หนังสือรับรองการแจ้ง/ใบอนุญาต</a></li>
               </NavDropdown.Item>
               <NavDropdown.Divider />
               <NavDropdown.Item>
@@ -462,14 +462,14 @@ fillMode="both">
 
 
 {/* excel data end*/}
-    <div className="card col-md-11 center" id="report3" style={{"display":"none"}}>
+    <div className="card col-md-9 center" id="report3" style={{"display":"none"}}>
       <input id="inputreport3" value="report3"  hidden/>
   <div className="container">
   <p style={{"margin-top":-25}}> รายงานบัญชีผู้ใช้งานระบบสนับสนุนพระราชบัญญัติเชื้อโรคและพิษจากสัตว์ออนไลน์ </p>
   <div className="row">
-  <div className="col-md-4">
+  <div className="col-md-3">
 
-  <InputGroup className="mb-2">
+  <InputGroup className="mb-3">
       <InputGroup.Text id="basic-addon1"  style={{height:40,'background-color': "#ebe8e8"}}>สิทธิการใช้งาน </InputGroup.Text>
       <Form.Select aria-label="Default select example" id="usertype" name="usertype" onChange={checkpermission}>
       <option value="" >--สิทธิการใช้งาน--</option>
@@ -479,9 +479,9 @@ fillMode="both">
       </Form.Select>
       </InputGroup> 
     </div>
-    <div className="col-md-4">
+    <div className="col-md-3">
     
-    <InputGroup className="mb-2">
+    <InputGroup className="mb-3">
         <InputGroup.Text id="basic-addon1"  style={{height:40,'background-color': "#ebe8e8"}}>ประเภทหน่วยงาน </InputGroup.Text>
         <Form.Select aria-label="Default select example" id="comtype" name="comtype" onChange={e=>setComType(e.target.value)}>
         <option value="0" selected="">--ประเภทหน่วยงาน--</option>
@@ -526,18 +526,13 @@ fillMode="both">
 </div>
   </div>
     {/* end of form tree */}
-    <div className="card col-md-8 center" id="report2" style={{"display":"none"}}>
+    <div className="card col-md-10 center" id="report2" style={{"display":"none"}}>
       <input id="inputreport2" value="report2"  hidden/>
   <div className="container">
   <p style={{"margin-top":-25}}>  รายงานบัญชีผู้ใช้งานระบบบูรณาการข้อมูลประชาชนและการบริการภาครัฐ</p>
   <div className="row">
-    {/* <div className="col">
-
-    
-    </div> */}
     <div className="col-md-4">
-
-    <InputGroup className="mb-2">
+    <InputGroup className="mb-4">
         <InputGroup.Text id="basic-addon1" style={{height:40,'background-color': "#ebe8e8"}}>ระบบงาน</InputGroup.Text>
         <Form.Select  onChange={e=>{
           const select = e.target;
@@ -549,18 +544,10 @@ fillMode="both">
 
     </Form.Select>
       </InputGroup>
-      {/* <InputGroup className="mb-4">
-      <InputGroup.Text id="basic-addon1">หน่วยงานเชื่อมโยง </InputGroup.Text>
-      <Form.Select aria-label="Default select example" id="agency" name="agency" onChange={e=>setagency(parseInt(e.target.value))}>
-      <option value="0" selected="">กรมการปกครอง</option>
-      <option value="1">กรมพัฒนาธุรกิจ</option>
-      <option value="2">กรมสรรพกร</option>
-      </Form.Select>
-      </InputGroup> */}
     </div>
     <div className="col-md-4">
    
-    <InputGroup className="mb-2">
+    <InputGroup className="mb-4">
       <InputGroup.Text id="basic-addon1"  style={{height:40,'background-color': "#ebe8e8"}}>ปี</InputGroup.Text>
       <Form.Select aria-label="Default select example" id="year" name="year" onChange={e=>setYear(e.target.value)}>
       <option value="0" selected="">--เลือกปี--</option>
