@@ -20,14 +20,7 @@ function App() {
     //    <ReportChartTwo  />
     //    </Routes>  </BrowserRouter>
 
-  
-
   return (<><ReportChart/></> );
-
-
-
-
-
   
 }
 export default App;

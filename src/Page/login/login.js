@@ -34,7 +34,7 @@ const [password, setPassword] = useState();
   "appid":"01"
 });
 console.log(datares);
- console.log("status"+datares.data.status);
+console.log("status"+datares.data.status);
 
  if(datares.data.status){   
 
@@ -49,11 +49,11 @@ console.log(JWtTokenDecode);
   
   }
   else{
-      window.location.href = "/chartReport"
+    window.location.href = "/chartReport"
   }
  }
  else{
-    new swal("Failed", datares.message, "error");
+    new swal("login Failed", datares,"error");
   console.log("Error");
  }
   }

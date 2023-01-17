@@ -148,6 +148,11 @@ if(response.data.status){
   document.body.removeChild(link);
 }else{
   throw new Error('DATA FOT FOUND');
+  //**
+  ///   ต้องกดค้นหาข้อมูลก่อน ///
+ 
+// ถึงจะสามารถ โหลด excel pdf ได้ ในหน้า report//
+  //
 }
  
 }) .catch(error => {
@@ -253,6 +258,8 @@ const SerachDataTree =  async() => {
     })
     let label = [] 
     setChartData({label,datasets:[]});    
+//  ถึงจะสามารถ โหลด excel pdf ได้ ในหน้า report //
+
   } 
 }
 
@@ -305,6 +312,7 @@ const Logout = ()=>{
   localStorage.removeItem("accessToken");
   window.location.href = "/login";
 }
+
 const GetReportwo = event =>{
   let el = document.getElementById("report2");
   if(el !== null){
@@ -531,6 +539,7 @@ fillMode="both">
   <div className="container">
   <p style={{"margin-top":-25}}>  รายงานบัญชีผู้ใช้งานระบบบูรณาการข้อมูลประชาชนและการบริการภาครัฐ</p>
   <div className="row">
+  <div className="col-md-2"></div>
     <div className="col-md-4">
     <InputGroup className="mb-4">
         <InputGroup.Text id="basic-addon1" style={{height:40,'background-color': "#ebe8e8"}}>ระบบงาน</InputGroup.Text>
@@ -545,9 +554,9 @@ fillMode="both">
     </Form.Select>
       </InputGroup>
     </div>
-    <div className="col-md-4">
+    <div className="col-md-2">
    
-    <InputGroup className="mb-4">
+    <InputGroup className="mb-2">
       <InputGroup.Text id="basic-addon1"  style={{height:40,'background-color': "#ebe8e8"}}>ปี</InputGroup.Text>
       <Form.Select aria-label="Default select example" id="year" name="year" onChange={e=>setYear(e.target.value)}>
       <option value="0" selected="">--เลือกปี--</option>
@@ -561,12 +570,14 @@ fillMode="both">
       </InputGroup>
     </div>
     <div className="col-md-2">
-      
-    <div class="btn-group" role="group" aria-label="Basic example">
+      <div className='md-2'>  
+      <div class="btn-group" role="group" aria-label="Basic example">
   <button type="button"  onClick={SerachDataTwo}  class="btn btn-outline-primary"><img  className="" src={search} alt="search" style={{width:20}}/></button>
   <button type="button" onClick={()=>Dowloadfile('pdf')}  class="btn btn-outline-danger"><img  className="" src={pdf} alt="pdf" style={{width:30}}/></button>
   <button onClick={()=>Dowloadfile('excel')}  type="button" class="btn btn-outline-success"><img  className="" src={excel} alt="excel" style={{width:20}}/></button>
 </div>
+      </div>
+   
       </div>
   </div>
 </div>

@@ -33,7 +33,7 @@ app.get('/',(req,res)=>{
 app.post(process.env.EXPRESS_APP_LOGIN,async(req,res)=>{
 try{
   // check status login data // for create log error login  case false // no flow data respon 
-
+  console.log(req.query);
   const body = req.query;
   const login = await axios({
     method: 'post',
@@ -49,6 +49,9 @@ let logdata = {"status":login.status,"header":login.config.headers["Content-Type
 console.log(login.data)
 if(login.data.status){
   await loger(JSON.stringify(logdata),'Dmsc-login');
+  return res.send(login.data);
+}
+else{
   return res.send(login.data);
 }
 
