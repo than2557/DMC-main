@@ -46,10 +46,10 @@ try{
 
 let jsonString = JSON.stringify({"username":body.username,"appid":body.appid});
 let logdata = {"status":login.status,"header":login.config.headers["Content-Type"],jsonString,"IP":req.ip};
-console.log(login.data)
+// console.log(login.data)
 if(login.data.status){
   await loger(JSON.stringify(logdata),'Dmsc-login');
-  return res.send(login.data);
+  return res.send({"data":login.data});
 }
 else{
   return res.send(login.data);

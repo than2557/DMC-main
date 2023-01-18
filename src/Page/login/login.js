@@ -34,22 +34,21 @@ const [password, setPassword] = useState();
   "appid":"01"
 });
 console.log(datares);
-console.log("status"+datares.data.status);
+console.log("status"+datares.data.data.status);
 
- if(datares.data.status){   
+ if(datares.data.data.status){   
 
-let JWtTokenDecode = jwt_decode(datares.data.token);
+let JWtTokenDecode = jwt_decode(datares.data.data.token);
 console.log(JWtTokenDecode);
-    localStorage.setItem('accessToken',datares.data.token);
+    localStorage.setItem('accessToken',datares.data.data.token);
   let dateToken = new Date(JWtTokenDecode.exp);
   // console.log(dateToken);
   if(new Date(dateToken) < new Date()){
     new swal("Failed","Token error");
     console.log("Error Token");
-  
   }
   else{
-    window.location.href = "/chartReport"
+    window.location.href = "/chartReport";
   }
  }
  else{
@@ -139,24 +138,7 @@ try{
   console.log(e)
   return e
 }
-
 }
 
-async function CreateLoglogin(url,data){
-  const response = await axios({
-    method: 'post',
-    url: url,
-      headers:{ 
-      'content-type': 'application/json;UTF-8',
-    },
-    params: data
-  });
-  if(response.data){
-    return response
-  }
-  else{
-    return {"status":false}
-  }
-}
 
 export default Login;
